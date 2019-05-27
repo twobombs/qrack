@@ -32,7 +32,7 @@ using namespace Qrack;
         REQUIRE(__tmp_b > (__tmp_b - EPSILON));                                                                        \
     } while (0);
 
-const bitLenInt MaxQubits = 20;
+const bitLenInt MaxQubits = 28;
 
 const double clockFactor = 1000.0 / CLOCKS_PER_SEC; // Report in ms
 
@@ -152,17 +152,17 @@ TEST_CASE("test_x_single")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->X(0, 1); });
 }
-
+#if 0
 TEST_CASE("test_swap_single")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->Swap(0, 1); });
 }
-
+#endif
 TEST_CASE("test_cnot_all")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->CNOT(0, n / 2, n / 2); });
 }
-
+#if 0
 TEST_CASE("test_ccnot_all")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->CCNOT(0, n / 3, (2 * n) / 3, n / 3); });
@@ -172,12 +172,12 @@ TEST_CASE("test_swap_all")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->Swap(0, n / 2, n / 2); });
 }
-
+#endif
 TEST_CASE("test_x_all")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->X(0, n); });
 }
-
+#if 0
 TEST_CASE("test_and_all")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->AND(0, n / 3, (2 * n) / 3, n / 3); });
@@ -319,7 +319,7 @@ TEST_CASE("test_set_reg")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->SetReg(0, n, 1); });
 }
-
+#endif
 TEST_CASE("test_grover")
 {
 
@@ -353,14 +353,14 @@ TEST_CASE("test_grover")
 
             qftReg->MReg(0, n);
         },
-        16);
+        20);
 }
-
+#if 0
 TEST_CASE("test_qft_ideal_init")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->QFT(0, n, false); }, false, false);
 }
-
+#endif
 TEST_CASE("test_qft_permutation_init")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->QFT(0, n, false); }, true, false);
@@ -372,16 +372,6 @@ TEST_CASE("test_qft_permutation_round_trip_entangled")
         [](QInterfacePtr qftReg, int n) {
             qftReg->QFT(0, n, false);
             qftReg->IQFT(0, n, false);
-        },
-        true, false);
-}
-
-TEST_CASE("test_qft_permutation_round_trip_separated")
-{
-    benchmarkLoop(
-        [](QInterfacePtr qftReg, int n) {
-            qftReg->QFT(0, n, false);
-            qftReg->IQFT(0, n, true);
         },
         true, false);
 }
