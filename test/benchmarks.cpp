@@ -32,7 +32,7 @@ using namespace Qrack;
         REQUIRE(__tmp_b > (__tmp_b - EPSILON));                                                                        \
     } while (0);
 
-const bitLenInt MaxQubits = 24;
+const bitLenInt MaxQubits = 28;
 
 const double clockFactor = 1000.0 / CLOCKS_PER_SEC; // Report in ms
 
@@ -202,7 +202,7 @@ TEST_CASE("test_swap_all")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->Swap(0, n / 2, n / 2); });
 }
-
+#if 0
 TEST_CASE("test_ccnot_all")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->CCNOT(0, n / 3, (2 * n) / 3, n / 3); });
@@ -349,7 +349,7 @@ TEST_CASE("test_set_reg")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->SetReg(0, n, 1); });
 }
-
+#endif
 TEST_CASE("test_grover")
 {
 
@@ -385,12 +385,12 @@ TEST_CASE("test_grover")
         },
         16);
 }
-
+#if 0
 TEST_CASE("test_qft_ideal_init")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->QFT(0, n, false); }, false, false);
 }
-
+#endif
 TEST_CASE("test_qft_permutation_init")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->QFT(0, n, false); }, true, false, testEngineType == QINTERFACE_QUNIT);
