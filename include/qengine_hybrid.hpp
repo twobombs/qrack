@@ -318,21 +318,6 @@ public:
         QENGINGEHYBRID_CALL(IndexedSBC(indexStart, indexLength, valueStart, valueLength, carryIndex, values));
     }
 
-    virtual void Swap(bitLenInt qubitIndex1, bitLenInt qubitIndex2)
-    {
-        QENGINGEHYBRID_CALL(Swap(qubitIndex1, qubitIndex2));
-    }
-    virtual void SqrtSwap(bitLenInt qubitIndex1, bitLenInt qubitIndex2)
-    {
-        QENGINGEHYBRID_CALL(SqrtSwap(qubitIndex1, qubitIndex2));
-    }
-    virtual void ISqrtSwap(bitLenInt qubitIndex1, bitLenInt qubitIndex2)
-    {
-        QENGINGEHYBRID_CALL(ISqrtSwap(qubitIndex1, qubitIndex2));
-    }
-
-    virtual real1 Prob(bitLenInt qubitIndex) { QENGINGEHYBRID_CALL(Prob(qubitIndex)); }
-    virtual real1 ProbAll(bitCapInt fullRegister) { QENGINGEHYBRID_CALL(ProbAll(fullRegister)); }
     virtual void UpdateRunningNorm() { QENGINGEHYBRID_CALL(UpdateRunningNorm()); }
     virtual void NormalizeState(real1 nrm = -999.0) { QENGINGEHYBRID_CALL(NormalizeState(nrm)); }
     virtual QInterfacePtr Clone() { QENGINGEHYBRID_CALL(Clone()); }
@@ -356,6 +341,23 @@ public:
     {
         QENGINGEHYBRID_CALL(ROL(shift, start, length));
     }
+
+#if 0
+    virtual void Swap(bitLenInt qubitIndex1, bitLenInt qubitIndex2)
+    {
+        QENGINGEHYBRID_CALL(Swap(qubitIndex1, qubitIndex2));
+    }
+    virtual void SqrtSwap(bitLenInt qubitIndex1, bitLenInt qubitIndex2)
+    {
+        QENGINGEHYBRID_CALL(SqrtSwap(qubitIndex1, qubitIndex2));
+    }
+    virtual void ISqrtSwap(bitLenInt qubitIndex1, bitLenInt qubitIndex2)
+    {
+        QENGINGEHYBRID_CALL(ISqrtSwap(qubitIndex1, qubitIndex2));
+    }
+    virtual real1 Prob(bitLenInt qubitIndex) { QENGINGEHYBRID_CALL(Prob(qubitIndex)); }
+    virtual real1 ProbAll(bitCapInt fullRegister) { QENGINGEHYBRID_CALL(ProbAll(fullRegister)); }
+#endif
 
     /** @} */
 };
