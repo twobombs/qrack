@@ -20,16 +20,16 @@
 namespace Qrack {
 
 QUnit::QUnit(QInterfaceEngine eng, bitLenInt qBitCount, bitCapInt initState, qrack_rand_gen_ptr rgp, complex phaseFac,
-    bool doNorm, bool randomGlobalPhase, bool useHostMem, int deviceID, bool useHardwareRNG)
+    bool doNorm, bool randomGlobalPhase, bool useHostMem, int deviceID, bool useHardwareRNG, bitLenInt minOCLBits)
     : QUnit(eng, eng, qBitCount, initState, rgp, phaseFac, doNorm, randomGlobalPhase, useHostMem, deviceID,
-          useHardwareRNG)
+          useHardwareRNG, minOCLBits)
 {
     // Intentionally left blank
 }
 
 QUnit::QUnit(QInterfaceEngine eng, QInterfaceEngine subEng, bitLenInt qBitCount, bitCapInt initState,
     qrack_rand_gen_ptr rgp, complex phaseFac, bool doNorm, bool randomGlobalPhase, bool useHostMem, int deviceID,
-    bool useHardwareRNG)
+    bool useHardwareRNG, bitLenInt minOCLBits)
     : QInterface(qBitCount, rgp, doNorm, useHardwareRNG)
     , engine(eng)
     , subengine(subEng)
@@ -39,6 +39,7 @@ QUnit::QUnit(QInterfaceEngine eng, QInterfaceEngine subEng, bitLenInt qBitCount,
     , randGlobalPhase(randomGlobalPhase)
     , useHostRam(useHostMem)
     , useRDRAND(useHardwareRNG)
+    , minimumOCLBits(minOCLBits)
 {
     shards.resize(qBitCount);
 
@@ -54,7 +55,7 @@ void QUnit::SetPermutation(bitCapInt perm, complex phaseFac)
     for (bitLenInt i = 0; i < qubitCount; i++) {
         bitState = ((1 << i) & perm) >> i;
         shards[i].unit = CreateQuantumInterface(engine, subengine, 1U, bitState ? 1U : 0U, rand_generator, phaseFac,
-            doNormalize, randGlobalPhase, useHostRam, devID, useRDRAND);
+            doNormalize, randGlobalPhase, useHostRam, devID, useRDRAND, minimumOCLBits);
         shards[i].mapped = 0;
         shards[i].prob = bitState ? ONE_R1 : ZERO_R1;
         shards[i].isProbDirty = false;
@@ -78,7 +79,7 @@ void QUnit::CopyState(QUnit* orig)
         shard.isProbDirty = otherShard.isProbDirty;
         if (otherUnits.find(otherShard.unit) == otherUnits.end()) {
             otherUnits[otherShard.unit] = CreateQuantumInterface(engine, subengine, 1, 0, rand_generator, phaseFactor,
-                doNormalize, randGlobalPhase, useHostRam, devID, useRDRAND);
+                doNormalize, randGlobalPhase, useHostRam, devID, useRDRAND, minimumOCLBits);
             otherUnits[otherShard.unit]->CopyState(otherShard.unit);
         }
         shard.unit = otherUnits[otherShard.unit];
@@ -89,7 +90,7 @@ void QUnit::CopyState(QUnit* orig)
 void QUnit::CopyState(QInterfacePtr orig)
 {
     QInterfacePtr unit = CreateQuantumInterface(engine, subengine, orig->GetQubitCount(), 0, rand_generator,
-        phaseFactor, doNormalize, randGlobalPhase, useHostRam, devID, useRDRAND);
+        phaseFactor, doNormalize, randGlobalPhase, useHostRam, devID, useRDRAND, minimumOCLBits);
     unit->CopyState(orig);
 
     SetQubitCount(orig->GetQubitCount());
@@ -108,7 +109,7 @@ void QUnit::CopyState(QInterfacePtr orig)
 void QUnit::SetQuantumState(const complex* inputState)
 {
     auto unit = CreateQuantumInterface(engine, subengine, qubitCount, 0, rand_generator, phaseFactor, doNormalize,
-        randGlobalPhase, useHostRam, devID, useRDRAND);
+        randGlobalPhase, useHostRam, devID, useRDRAND, minimumOCLBits);
     unit->SetQuantumState(inputState);
 
     int idx = 0;
@@ -442,7 +443,7 @@ bool QUnit::TrySeparate(bitLenInt start, bitLenInt length)
     }
 
     QInterfacePtr separatedBits = CreateQuantumInterface(engine, subengine, length, 0, rand_generator,
-        complex(ONE_R1, ZERO_R1), doNormalize, randGlobalPhase, useHostRam, devID, useRDRAND);
+        complex(ONE_R1, ZERO_R1), doNormalize, randGlobalPhase, useHostRam, devID, useRDRAND, minimumOCLBits);
 
     QInterfacePtr unitCopy = shards[start].unit->Clone();
 
@@ -634,7 +635,7 @@ void QUnit::SeparateBit(bool value, bitLenInt qubit)
     QEngineShard origShard = shards[qubit];
 
     QInterfacePtr dest = CreateQuantumInterface(engine, subengine, 1, value ? 1 : 0, rand_generator, phaseFactor,
-        doNormalize, randGlobalPhase, useHostRam, devID, useRDRAND);
+        doNormalize, randGlobalPhase, useHostRam, devID, useRDRAND, minimumOCLBits);
 
     origShard.unit->Dispose(origShard.mapped, 1);
 

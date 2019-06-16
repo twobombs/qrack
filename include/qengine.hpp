@@ -25,6 +25,7 @@ typedef std::shared_ptr<QEngine> QEnginePtr;
  */
 class QEngine : public QInterface {
 protected:
+    complex* stateVec;
     bool randGlobalPhase;
     bool useHostRam;
     /// The value stored in runningNorm should always be the total probability implied by the norm of all amplitudes,
@@ -42,12 +43,25 @@ protected:
     }
 
 public:
-    QEngine(bitLenInt n, qrack_rand_gen_ptr rgp = nullptr, bool doNorm = false, bool randomGlobalPhase = true,
+    QEngine(bitLenInt qBitCount, qrack_rand_gen_ptr rgp = nullptr, bool doNorm = false, bool randomGlobalPhase = true,
         bool useHostMem = false, bool useHardwareRNG = true)
-        : QInterface(n, rgp, doNorm, useHardwareRNG)
+        : QInterface(qBitCount, rgp, doNorm, useHardwareRNG)
+        , stateVec(NULL)
         , randGlobalPhase(randomGlobalPhase)
         , useHostRam(useHostMem)
-        , runningNorm(ONE_R1){};
+        , runningNorm(ONE_R1)
+    {
+
+        if (qBitCount > (sizeof(bitCapInt) * bitsInByte)) {
+            throw std::invalid_argument(
+                "Cannot instantiate a register with greater capacity than native types on emulating system.");
+        }
+    };
+
+    QEngine()
+    {
+        // Intentionally left blank
+    }
 
     virtual bool ForceM(bitLenInt qubitIndex, bool result, bool doForce = true);
     virtual bitCapInt ForceM(const bitLenInt* bits, const bitLenInt& length, const bool* values);

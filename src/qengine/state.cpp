@@ -37,17 +37,10 @@ namespace Qrack {
  * phase usually makes sense only if they are initialized at the same time.
  */
 QEngineCPU::QEngineCPU(bitLenInt qBitCount, bitCapInt initState, qrack_rand_gen_ptr rgp, complex phaseFac, bool doNorm,
-    bool randomGlobalPhase, bool useHostMem, int deviceID, bool useHardwareRNG)
+    bool randomGlobalPhase, bool useHostMem, int deviceID, bool useHardwareRNG, bitLenInt minOCLQubits)
     : QEngine(qBitCount, rgp, doNorm, randomGlobalPhase, true, useHardwareRNG)
-    , stateVec(NULL)
 {
     SetConcurrencyLevel(std::thread::hardware_concurrency());
-    if (qBitCount > (sizeof(bitCapInt) * bitsInByte))
-        throw std::invalid_argument(
-            "Cannot instantiate a register with greater capacity than native types on emulating system.");
-
-    runningNorm = ONE_R1;
-    SetQubitCount(qBitCount);
 
     stateVec = AllocStateVec(maxQPower);
     std::fill(stateVec, stateVec + maxQPower, complex(ZERO_R1, ZERO_R1));

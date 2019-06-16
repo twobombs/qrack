@@ -51,11 +51,17 @@ enum QInterfaceEngine {
      * Create a QEngineCPU leveraging only local CPU and memory resources.
      */
     QINTERFACE_CPU = 0,
+
     /**
-     * Create a QEngineOCL, derived from QEngineCPU, leveraging OpenCL hardware to increase the speed of certain
-     * calculations.
+     * Create a QEngineOCL, leveraging OpenCL hardware to increase the speed of certain calculations.
      */
     QINTERFACE_OPENCL,
+
+    /**
+     * Create a QEngineHybrid, derived from both QEngineCPU and QEngineOCL, shifting between their two modes based on a
+     * qubit threshold.
+     */
+    QINTERFACE_HYBRID,
 
     /**
      * Create a QFusion, which is a gate fusion layer between a QEngine and its public interface.
@@ -73,7 +79,7 @@ enum QInterfaceEngine {
 
     QINTERFACE_FIRST = QINTERFACE_CPU,
 #if ENABLE_OPENCL
-    QINTERFACE_OPTIMAL = QINTERFACE_OPENCL,
+    QINTERFACE_OPTIMAL = QINTERFACE_HYBRID,
 #else
     QINTERFACE_OPTIMAL = QINTERFACE_CPU,
 #endif
@@ -169,6 +175,11 @@ public:
         }
     }
 
+    QInterface()
+    {
+        // Intentionally left blank
+    }
+
     /** Destructor of QInterface */
     virtual ~QInterface(){};
 
@@ -179,7 +190,7 @@ public:
     int GetMaxQPower() { return maxQPower; }
 
     /** Generate a random real number between 0 and 1 */
-    virtual real1 Rand()
+    real1 Rand()
     {
         if (hardware_rand_generator != NULL) {
             return hardware_rand_generator->Next();

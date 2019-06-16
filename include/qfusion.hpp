@@ -33,6 +33,7 @@ protected:
     complex phaseFactor;
     bool doNormalize;
     bool randGlobalPhase;
+    bitLenInt minimumOCLBits;
 
     std::vector<BitBufferPtr> bitBuffers;
     std::vector<std::vector<bitLenInt>> bitControls;
@@ -48,7 +49,7 @@ protected:
 public:
     QFusion(QInterfaceEngine eng, bitLenInt qBitCount, bitCapInt initState = 0, qrack_rand_gen_ptr rgp = nullptr,
         complex phaseFac = complex(-999.0, -999.0), bool doNorm = false, bool randomGlobalPhase = true,
-        bool useHostMem = false, int deviceID = -1, bool useHardwareRNG = true);
+        bool useHostMem = false, int deviceID = -1, bool useHardwareRNG = true, bitLenInt minOCLBits = 3);
     QFusion(QInterfacePtr target);
 
     virtual void SetQuantumState(const complex* inputState);

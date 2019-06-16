@@ -86,9 +86,9 @@ typedef std::shared_ptr<PoolItem> PoolItemPtr;
  * asynchronous methods are always joined, in order of dispatch, before any and all non-void-return methods give their
  * results.
  */
-class QEngineOCL : public QEngine {
+class QEngineOCL : virtual public QEngine {
 protected:
-    complex* stateVec;
+    using QEngine::stateVec;
     int deviceID;
     DeviceContextPtr device_context;
     std::vector<EventVecPtr> wait_refs;
@@ -132,7 +132,11 @@ public:
 
     QEngineOCL(bitLenInt qBitCount, bitCapInt initState, qrack_rand_gen_ptr rgp = nullptr,
         complex phaseFac = complex(-999.0, -999.0), bool doNorm = false, bool randomGlobalPhase = true,
-        bool useHostMem = false, int devID = -1, bool useHardwareRNG = true);
+        bool useHostMem = false, int devID = -1, bool useHardwareRNG = true, bitLenInt ignored = 0);
+    QEngineOCL()
+    {
+        // Intentionally left blank
+    }
     ~QEngineOCL()
     {
         clFinish();
