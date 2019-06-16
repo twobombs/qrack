@@ -44,7 +44,7 @@ public:
     {
         // Intentionally left blank
     }
-    ~QEngineCPU() { FreeStateVec(); }
+    virtual ~QEngineCPU() { FreeStateVec(); }
 
     virtual void SetQuantumState(const complex* inputState);
     virtual void GetQuantumState(complex* outputState);

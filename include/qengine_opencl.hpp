@@ -137,7 +137,7 @@ public:
     {
         // Intentionally left blank
     }
-    ~QEngineOCL()
+    virtual ~QEngineOCL()
     {
         clFinish();
 
