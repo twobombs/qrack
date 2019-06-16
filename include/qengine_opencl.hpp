@@ -155,11 +155,8 @@ public:
     /* Operations that have an improved implementation. */
     using QEngine::X;
     virtual void X(bitLenInt target);
-    virtual void X(bitLenInt start, bitLenInt length);
     using QEngine::Z;
     virtual void Z(bitLenInt target);
-    using QEngine::Swap;
-    virtual void Swap(bitLenInt start1, bitLenInt start2, bitLenInt length);
 
     using QEngine::Compose;
     virtual bitLenInt Compose(QEngineOCLPtr toCopy);

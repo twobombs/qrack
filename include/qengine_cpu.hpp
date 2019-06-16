@@ -72,28 +72,6 @@ public:
     /** @} */
 
     /**
-     * \defgroup RegGates Register-spanning gates
-     *
-     * Convienence and optimized functions implementing gates are applied from
-     * the bit 'start' for 'length' bits for the register.
-     *
-     * @{
-     */
-
-    using QEngine::X;
-    virtual void X(bitLenInt start, bitLenInt length);
-    using QEngine::CNOT;
-    virtual void CNOT(bitLenInt control, bitLenInt target, bitLenInt length);
-    using QEngine::AntiCNOT;
-    virtual void AntiCNOT(bitLenInt control, bitLenInt target, bitLenInt length);
-    using QEngine::CCNOT;
-    virtual void CCNOT(bitLenInt control1, bitLenInt control2, bitLenInt target, bitLenInt length);
-    using QEngine::AntiCCNOT;
-    virtual void AntiCCNOT(bitLenInt control1, bitLenInt control2, bitLenInt target, bitLenInt length);
-
-    /** @} */
-
-    /**
      * \defgroup ArithGate Arithmetic and other opcode-like gate implemenations.
      *
      * @{
@@ -137,8 +115,6 @@ public:
         bitLenInt valueLength, bitLenInt carryIndex, unsigned char* values);
     virtual bitCapInt IndexedSBC(bitLenInt indexStart, bitLenInt indexLength, bitLenInt valueStart,
         bitLenInt valueLength, bitLenInt carryIndex, unsigned char* values);
-    using QEngine::Swap;
-    virtual void Swap(bitLenInt start1, bitLenInt start2, bitLenInt length);
     virtual void UniformlyControlledSingleBit(
         const bitLenInt* controls, const bitLenInt& controlLen, bitLenInt qubitIndex, const complex* mtrxs);
 

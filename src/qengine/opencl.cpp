@@ -1344,38 +1344,6 @@ void QEngineOCL::ProbMaskAll(const bitCapInt& mask, real1* probsArray)
     delete[] skipPowers;
 }
 
-// Apply X ("not") gate to each bit in "length," starting from bit index
-// "start"
-void QEngineOCL::X(bitLenInt start, bitLenInt length)
-{
-    if (length == 1) {
-        X(start);
-        return;
-    }
-
-    bitCapInt regMask = ((1 << length) - 1) << start;
-    bitCapInt otherMask = ((1 << qubitCount) - 1) ^ regMask;
-    bitCapInt bciArgs[BCI_ARG_LEN] = { maxQPower, regMask, otherMask, 0, 0, 0, 0, 0, 0, 0 };
-
-    ArithmeticCall(OCL_API_X, bciArgs);
-}
-
-/// Bitwise swap
-void QEngineOCL::Swap(bitLenInt start1, bitLenInt start2, bitLenInt length)
-{
-    if (start1 == start2) {
-        return;
-    }
-
-    bitCapInt reg1Mask = ((1 << length) - 1) << start1;
-    bitCapInt reg2Mask = ((1 << length) - 1) << start2;
-    bitCapInt otherMask = maxQPower - 1;
-    otherMask ^= reg1Mask | reg2Mask;
-    bitCapInt bciArgs[BCI_ARG_LEN] = { maxQPower, reg1Mask, reg2Mask, otherMask, start1, start2, 0, 0, 0, 0 };
-
-    ArithmeticCall(OCL_API_SWAP, bciArgs);
-}
-
 void QEngineOCL::ROx(OCLAPI api_call, bitLenInt shift, bitLenInt start, bitLenInt length)
 {
     shift %= length;

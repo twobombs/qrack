@@ -28,7 +28,7 @@ namespace Qrack {
 class QEngineHybrid;
 typedef std::shared_ptr<QEngineHybrid> QEngineHybridPtr;
 
-class QEngineHybrid : public QEngineCPU, QEngineOCL {
+class QEngineHybrid : public QEngineOCL, QEngineCPU {
 protected:
     bitLenInt minimumOCLBits;
     bool isLocked;
@@ -354,7 +354,8 @@ public:
         QENGINGEHYBRID_CALL(UniformlyControlledSingleBit(controls, controlLen, qubitIndex, mtrxs));
     }
 
-    virtual void X(bitLenInt start, bitLenInt length) { QENGINGEHYBRID_CALL(X(start, length)); }
+    virtual void X(bitLenInt start) { QENGINGEHYBRID_CALL(X(start)); }
+    virtual void Z(bitLenInt start) { QENGINGEHYBRID_CALL(Z(start)); }
 
     virtual void ROL(bitLenInt shift, bitLenInt start, bitLenInt length)
     {
