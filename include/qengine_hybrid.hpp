@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <thread>
+
 #include "qengine_cpu.hpp"
 #include "qengine_opencl.hpp"
 
@@ -160,6 +162,12 @@ public:
      *@{
      */
 
+    virtual void Apply2x2(bitCapInt offset1, bitCapInt offset2, const complex* mtrx, const bitLenInt bitCount,
+        const bitCapInt* qPowersSorted, bool doCalcNorm)
+    {
+        QENGINGEHYBRID_CALL(Apply2x2(offset1, offset2, mtrx, bitCount, qPowersSorted, doCalcNorm));
+    }
+
     virtual void INCDECC(
         bitCapInt toMod, const bitLenInt& inOutStart, const bitLenInt& length, const bitLenInt& carryIndex)
     {
@@ -179,6 +187,11 @@ public:
         bitCapInt toMod, const bitLenInt& inOutStart, const bitLenInt& length, const bitLenInt& carryIndex)
     {
         QENGINGEHYBRID_CALL(INCDECBCDC(toMod, inOutStart, length, carryIndex));
+    }
+
+    virtual void ApplyM(bitCapInt regMask, bitCapInt result, complex nrm)
+    {
+        QENGINGEHYBRID_CALL(ApplyM(regMask, result, nrm));
     }
 
     /** @} */
@@ -264,11 +277,11 @@ public:
     }
     virtual void MULModNOut(bitCapInt toMul, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length)
     {
-        QENGINGEHYBRID_CALL(MULModNOut(toMul, modN, inOutStart, outStart, length));
+        QENGINGEHYBRID_CALL(MULModNOut(toMul, modN, inStart, outStart, length));
     }
     virtual void POWModNOut(bitCapInt base, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length)
     {
-        QENGINGEHYBRID_CALL(POWModNOut(base, modN, inOutStart, outStart, length));
+        QENGINGEHYBRID_CALL(POWModNOut(base, modN, inStart, outStart, length));
     }
     virtual void CMUL(bitCapInt toMul, bitLenInt inOutStart, bitLenInt carryStart, bitLenInt length,
         bitLenInt* controls, bitLenInt controlLen)
@@ -283,12 +296,12 @@ public:
     virtual void CMULModNOut(bitCapInt toMul, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length,
         bitLenInt* controls, bitLenInt controlLen)
     {
-        QENGINGEHYBRID_CALL(CMULModNOut(toMul, modN, inOutStart, outStart, length, controls, controlLen));
+        QENGINGEHYBRID_CALL(CMULModNOut(toMul, modN, inStart, outStart, length, controls, controlLen));
     }
     virtual void CPOWModNOut(bitCapInt base, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length,
         bitLenInt* controls, bitLenInt controlLen)
     {
-        QENGINGEHYBRID_CALL(CPOWModNOut(base, modN, inOutStart, outStart, length, controls, controlLen));
+        QENGINGEHYBRID_CALL(CPOWModNOut(base, modN, inStart, outStart, length, controls, controlLen));
     }
 
     virtual void ZeroPhaseFlip(bitLenInt start, bitLenInt length) { QENGINGEHYBRID_CALL(ZeroPhaseFlip(start, length)); }
@@ -342,22 +355,21 @@ public:
         QENGINGEHYBRID_CALL(ROL(shift, start, length));
     }
 
-#if 0
-    virtual void Swap(bitLenInt qubitIndex1, bitLenInt qubitIndex2)
+    virtual void Swap(bitLenInt start1, bitLenInt start2, bitLenInt length)
     {
-        QENGINGEHYBRID_CALL(Swap(qubitIndex1, qubitIndex2));
+        QENGINGEHYBRID_CALL(Swap(start1, start2, length));
     }
-    virtual void SqrtSwap(bitLenInt qubitIndex1, bitLenInt qubitIndex2)
-    {
-        QENGINGEHYBRID_CALL(SqrtSwap(qubitIndex1, qubitIndex2));
-    }
-    virtual void ISqrtSwap(bitLenInt qubitIndex1, bitLenInt qubitIndex2)
-    {
-        QENGINGEHYBRID_CALL(ISqrtSwap(qubitIndex1, qubitIndex2));
-    }
+
     virtual real1 Prob(bitLenInt qubitIndex) { QENGINGEHYBRID_CALL(Prob(qubitIndex)); }
     virtual real1 ProbAll(bitCapInt fullRegister) { QENGINGEHYBRID_CALL(ProbAll(fullRegister)); }
-#endif
+    virtual real1 ProbReg(const bitLenInt& start, const bitLenInt& length, const bitCapInt& permutation)
+    {
+        QENGINGEHYBRID_CALL(ProbReg(start, length, permutation));
+    }
+    virtual real1 ProbMask(const bitCapInt& mask, const bitCapInt& permutation)
+    {
+        QENGINGEHYBRID_CALL(ProbMask(mask, permutation));
+    }
 
     /** @} */
 };
