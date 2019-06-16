@@ -122,7 +122,6 @@ int main(int argc, char* argv[])
             num_failed = session.run();
         }
 
-#if 0
         if (num_failed == 0 && hybrid) {
             session.config().stream() << "############ QEngine -> Hybrid ############" << std::endl;
             testEngineType = QINTERFACE_HYBRID;
@@ -131,7 +130,6 @@ int main(int argc, char* argv[])
             CreateQuantumInterface(QINTERFACE_OPENCL, 1, 0).reset(); /* Get the OpenCL banner out of the way. */
             num_failed = session.run();
         }
-#endif
 #endif
     }
 
@@ -154,7 +152,6 @@ int main(int argc, char* argv[])
             num_failed = session.run();
         }
 
-#if 0
         if (num_failed == 0 && hybrid) {
             session.config().stream() << "############ QFusion -> Hybrid ############" << std::endl;
             testEngineType = QINTERFACE_QFUSION;
@@ -163,7 +160,6 @@ int main(int argc, char* argv[])
             CreateQuantumInterface(QINTERFACE_OPENCL, 1, 0).reset(); /* Get the OpenCL banner out of the way. */
             num_failed = session.run();
         }
-#endif
 #endif
     }
 
@@ -185,7 +181,6 @@ int main(int argc, char* argv[])
             num_failed = session.run();
         }
 
-#if 0
         if (num_failed == 0 && hybrid) {
             session.config().stream() << "############ QUnit -> QEngine -> OpenCL ############" << std::endl;
             testSubEngineType = QINTERFACE_HYBRID;
@@ -193,7 +188,6 @@ int main(int argc, char* argv[])
             CreateQuantumInterface(QINTERFACE_OPENCL, 1, 0).reset(); /* Get the OpenCL banner out of the way. */
             num_failed = session.run();
         }
-#endif
 #endif
     }
 
@@ -214,14 +208,12 @@ int main(int argc, char* argv[])
             num_failed = session.run();
         }
 
-#if 0
         if (num_failed == 0 && hybrid) {
             session.config().stream() << "############ QUnit -> QFusion -> OpenCL ############" << std::endl;
             testSubSubEngineType = QINTERFACE_HYBRID;
             CreateQuantumInterface(QINTERFACE_OPENCL, 1, 0).reset(); /* Get the OpenCL banner out of the way. */
             num_failed = session.run();
         }
-#endif
 #endif
     }
 

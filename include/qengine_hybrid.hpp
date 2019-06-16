@@ -186,9 +186,9 @@ public:
      * \defgroup QEngineOCL overrides
      *@{
      */
-    virtual void Finish();
-    virtual bool isFinished();
-    virtual bool TrySeparate(bitLenInt start, bitLenInt length = 1);
+    virtual void Finish() { QENGINGEHYBRID_CALL(Finish()); }
+    virtual bool isFinished() { QENGINGEHYBRID_CALL(isFinished()); }
+    virtual bool TrySeparate(bitLenInt start, bitLenInt length = 1) { QENGINGEHYBRID_CALL(TrySeparate(start, length)); }
 
     /** @} */
 
@@ -196,68 +196,145 @@ public:
      * \defgroup QInterface pure virtuals (not overriden by QEngine)
      *@{
      */
-    virtual void SetQuantumState(const complex* inputState) = 0;
-    virtual void GetQuantumState(complex* outputState) = 0;
-    virtual void GetProbs(real1* outputProbs) = 0;
-    virtual complex GetAmplitude(bitCapInt perm) = 0;
-    virtual void SetPermutation(bitCapInt perm, complex phaseFac = complex(-999.0, -999.0)) = 0;
+    virtual void SetQuantumState(const complex* inputState) { QENGINGEHYBRID_CALL(SetQuantumState(inputState)); }
+    virtual void GetQuantumState(complex* outputState) { QENGINGEHYBRID_CALL(GetQuantumState(outputState)); }
+    virtual void GetProbs(real1* outputProbs) { QENGINGEHYBRID_CALL(GetProbs(outputProbs)); }
+    virtual complex GetAmplitude(bitCapInt perm) { QENGINGEHYBRID_CALL(GetAmplitude(perm)); }
+    virtual void SetPermutation(bitCapInt perm, complex phaseFac = complex(-999.0, -999.0))
+    {
+        QENGINGEHYBRID_CALL(SetPermutation(perm, phaseFac));
+    }
 
     virtual void CSwap(
-        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2) = 0;
+        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2)
+    {
+        QENGINGEHYBRID_CALL(CSwap(controls, controlLen, qubit1, qubit2));
+    }
     virtual void AntiCSwap(
-        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2) = 0;
+        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2)
+    {
+        QENGINGEHYBRID_CALL(AntiCSwap(controls, controlLen, qubit1, qubit2));
+    }
     virtual void CSqrtSwap(
-        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2) = 0;
+        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2)
+    {
+        QENGINGEHYBRID_CALL(CSqrtSwap(controls, controlLen, qubit1, qubit2));
+    }
     virtual void AntiCSqrtSwap(
-        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2) = 0;
+        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2)
+    {
+        QENGINGEHYBRID_CALL(AntiCSqrtSwap(controls, controlLen, qubit1, qubit2));
+    }
     virtual void CISqrtSwap(
-        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2) = 0;
+        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2)
+    {
+        QENGINGEHYBRID_CALL(CISqrtSwap(controls, controlLen, qubit1, qubit2));
+    }
     virtual void AntiCISqrtSwap(
-        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2) = 0;
+        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2)
+    {
+        QENGINGEHYBRID_CALL(AntiCISqrtSwap(controls, controlLen, qubit1, qubit2));
+    }
 
-    virtual void INC(bitCapInt toAdd, bitLenInt start, bitLenInt length) = 0;
+    virtual void INC(bitCapInt toAdd, bitLenInt start, bitLenInt length)
+    {
+        QENGINGEHYBRID_CALL(INC(toAdd, start, length));
+    }
     virtual void CINC(
-        bitCapInt toAdd, bitLenInt inOutStart, bitLenInt length, bitLenInt* controls, bitLenInt controlLen) = 0;
-    virtual void INCS(bitCapInt toAdd, bitLenInt start, bitLenInt length, bitLenInt overflowIndex) = 0;
-    virtual void INCBCD(bitCapInt toAdd, bitLenInt start, bitLenInt length) = 0;
-    virtual void MUL(bitCapInt toMul, bitLenInt inOutStart, bitLenInt carryStart, bitLenInt length) = 0;
-    virtual void DIV(bitCapInt toDiv, bitLenInt inOutStart, bitLenInt carryStart, bitLenInt length) = 0;
-    virtual void MULModNOut(
-        bitCapInt toMul, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length) = 0;
-    virtual void POWModNOut(
-        bitCapInt base, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length) = 0;
+        bitCapInt toAdd, bitLenInt inOutStart, bitLenInt length, bitLenInt* controls, bitLenInt controlLen)
+    {
+        QENGINGEHYBRID_CALL(CINC(toAdd, inOutStart, length, controls, controlLen));
+    }
+    virtual void INCS(bitCapInt toAdd, bitLenInt inOutStart, bitLenInt length, bitLenInt overflowIndex)
+    {
+        QENGINGEHYBRID_CALL(INCS(toAdd, inOutStart, length, overflowIndex));
+    }
+    virtual void INCBCD(bitCapInt toAdd, bitLenInt inOutStart, bitLenInt length)
+    {
+        QENGINGEHYBRID_CALL(INCBCD(toAdd, inOutStart, length));
+    }
+    virtual void MUL(bitCapInt toMul, bitLenInt inOutStart, bitLenInt carryStart, bitLenInt length)
+    {
+        QENGINGEHYBRID_CALL(MUL(toMul, inOutStart, carryStart, length));
+    }
+    virtual void DIV(bitCapInt toDiv, bitLenInt inOutStart, bitLenInt carryStart, bitLenInt length)
+    {
+        QENGINGEHYBRID_CALL(MUL(toDiv, inOutStart, carryStart, length));
+    }
+    virtual void MULModNOut(bitCapInt toMul, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length)
+    {
+        QENGINGEHYBRID_CALL(MULModNOut(toMul, modN, inOutStart, outStart, length));
+    }
+    virtual void POWModNOut(bitCapInt base, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length)
+    {
+        QENGINGEHYBRID_CALL(POWModNOut(base, modN, inOutStart, outStart, length));
+    }
     virtual void CMUL(bitCapInt toMul, bitLenInt inOutStart, bitLenInt carryStart, bitLenInt length,
-        bitLenInt* controls, bitLenInt controlLen) = 0;
+        bitLenInt* controls, bitLenInt controlLen)
+    {
+        QENGINGEHYBRID_CALL(CMUL(toMul, inOutStart, carryStart, length, controls, controlLen));
+    }
     virtual void CDIV(bitCapInt toDiv, bitLenInt inOutStart, bitLenInt carryStart, bitLenInt length,
-        bitLenInt* controls, bitLenInt controlLen) = 0;
+        bitLenInt* controls, bitLenInt controlLen)
+    {
+        QENGINGEHYBRID_CALL(CDIV(toDiv, inOutStart, carryStart, length, controls, controlLen));
+    }
     virtual void CMULModNOut(bitCapInt toMul, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length,
-        bitLenInt* controls, bitLenInt controlLen) = 0;
+        bitLenInt* controls, bitLenInt controlLen)
+    {
+        QENGINGEHYBRID_CALL(CMULModNOut(toMul, modN, inOutStart, outStart, length, controls, controlLen));
+    }
     virtual void CPOWModNOut(bitCapInt base, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length,
-        bitLenInt* controls, bitLenInt controlLen) = 0;
+        bitLenInt* controls, bitLenInt controlLen)
+    {
+        QENGINGEHYBRID_CALL(CPOWModNOut(base, modN, inOutStart, outStart, length, controls, controlLen));
+    }
 
-    virtual void ZeroPhaseFlip(bitLenInt start, bitLenInt length) = 0;
-    virtual void CPhaseFlipIfLess(bitCapInt greaterPerm, bitLenInt start, bitLenInt length, bitLenInt flagIndex) = 0;
-    virtual void PhaseFlipIfLess(bitCapInt greaterPerm, bitLenInt start, bitLenInt length) = 0;
-    virtual void PhaseFlip() = 0;
+    virtual void ZeroPhaseFlip(bitLenInt start, bitLenInt length) { QENGINGEHYBRID_CALL(ZeroPhaseFlip(start, length)); }
+    virtual void CPhaseFlipIfLess(bitCapInt greaterPerm, bitLenInt start, bitLenInt length, bitLenInt flagIndex)
+    {
+        QENGINGEHYBRID_CALL(CPhaseFlipIfLess(greaterPerm, start, length, flagIndex));
+    }
+    virtual void PhaseFlipIfLess(bitCapInt greaterPerm, bitLenInt start, bitLenInt length)
+    {
+        QENGINGEHYBRID_CALL(PhaseFlipIfLess(greaterPerm, start, length));
+    }
+    virtual void PhaseFlip() { QENGINGEHYBRID_CALL(PhaseFlip()); }
 
-    virtual bitCapInt IndexedLDA(bitLenInt indexStart, bitLenInt indexLength, bitLenInt valueStart,
-        bitLenInt valueLength, unsigned char* values) = 0;
+    virtual bitCapInt IndexedLDA(
+        bitLenInt indexStart, bitLenInt indexLength, bitLenInt valueStart, bitLenInt valueLength, unsigned char* values)
+    {
+        QENGINGEHYBRID_CALL(IndexedLDA(indexStart, indexLength, valueStart, valueLength, values));
+    }
     virtual bitCapInt IndexedADC(bitLenInt indexStart, bitLenInt indexLength, bitLenInt valueStart,
-        bitLenInt valueLength, bitLenInt carryIndex, unsigned char* values) = 0;
+        bitLenInt valueLength, bitLenInt carryIndex, unsigned char* values)
+    {
+        QENGINGEHYBRID_CALL(IndexedADC(indexStart, indexLength, valueStart, valueLength, carryIndex, values));
+    }
     virtual bitCapInt IndexedSBC(bitLenInt indexStart, bitLenInt indexLength, bitLenInt valueStart,
-        bitLenInt valueLength, bitLenInt carryIndex, unsigned char* values) = 0;
+        bitLenInt valueLength, bitLenInt carryIndex, unsigned char* values)
+    {
+        QENGINGEHYBRID_CALL(IndexedSBC(indexStart, indexLength, valueStart, valueLength, carryIndex, values));
+    }
 
-    virtual void Swap(bitLenInt qubitIndex1, bitLenInt qubitIndex2) = 0;
-    virtual void SqrtSwap(bitLenInt qubitIndex1, bitLenInt qubitIndex2) = 0;
-    virtual void ISqrtSwap(bitLenInt qubitIndex1, bitLenInt qubitIndex2) = 0;
+    virtual void Swap(bitLenInt qubitIndex1, bitLenInt qubitIndex2)
+    {
+        QENGINGEHYBRID_CALL(Swap(qubitIndex1, qubitIndex2));
+    }
+    virtual void SqrtSwap(bitLenInt qubitIndex1, bitLenInt qubitIndex2)
+    {
+        QENGINGEHYBRID_CALL(SqrtSwap(qubitIndex1, qubitIndex2));
+    }
+    virtual void ISqrtSwap(bitLenInt qubitIndex1, bitLenInt qubitIndex2)
+    {
+        QENGINGEHYBRID_CALL(ISqrtSwap(qubitIndex1, qubitIndex2));
+    }
 
-    virtual void CopyState(QInterfacePtr orig) = 0;
-    virtual real1 Prob(bitLenInt qubitIndex) = 0;
-    virtual real1 ProbAll(bitCapInt fullRegister) = 0;
-    virtual bool ApproxCompare(QInterfacePtr toCompare) = 0;
-    virtual void UpdateRunningNorm() = 0;
-    virtual void NormalizeState(real1 nrm = -999.0) = 0;
-    virtual QInterfacePtr Clone() = 0;
+    virtual real1 Prob(bitLenInt qubitIndex) { QENGINGEHYBRID_CALL(Prob(qubitIndex)); }
+    virtual real1 ProbAll(bitCapInt fullRegister) { QENGINGEHYBRID_CALL(ProbAll(fullRegister)); }
+    virtual void UpdateRunningNorm() { QENGINGEHYBRID_CALL(UpdateRunningNorm()); }
+    virtual void NormalizeState(real1 nrm = -999.0) { QENGINGEHYBRID_CALL(NormalizeState(nrm)); }
+    virtual QInterfacePtr Clone() { QENGINGEHYBRID_CALL(Clone()); }
 
     /** @} */
 };
