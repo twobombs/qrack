@@ -137,14 +137,7 @@ public:
     {
         // Intentionally left blank
     }
-    virtual ~QEngineOCL()
-    {
-        clFinish();
-
-        FreeStateVec();
-
-        FreeAligned(nrmArray);
-    }
+    virtual ~QEngineOCL() { FreeAligned(nrmArray); }
 
     virtual void SetQubitCount(bitLenInt qb);
 
@@ -252,17 +245,7 @@ protected:
     PoolItemPtr GetFreePoolItem();
     void ResetStateVec(complex* nStateVec, BufferPtr nStateBuffer);
     virtual complex* AllocStateVec(bitCapInt elemCount, bool doForceAlloc = false);
-    virtual void FreeStateVec()
-    {
-        if (stateVec) {
-#if defined(_WIN32)
-            _aligned_free(stateVec);
-#else
-            free(stateVec);
-#endif
-        }
-        stateVec = NULL;
-    }
+
     virtual BufferPtr MakeStateVecBuffer(complex* nStateVec);
 
     real1 ParSum(real1* toSum, bitCapInt maxI);

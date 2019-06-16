@@ -149,6 +149,7 @@ protected:
             free(toFree);
 #endif
         }
+        toFree = NULL;
     }
 
 public:

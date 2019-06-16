@@ -44,7 +44,7 @@ public:
     {
         // Intentionally left blank
     }
-    virtual ~QEngineCPU() { FreeStateVec(); }
+    virtual ~QEngineCPU() {}
 
     virtual void SetQuantumState(const complex* inputState);
     virtual void GetQuantumState(complex* outputState);
@@ -164,17 +164,6 @@ public:
 protected:
     virtual void ResetStateVec(complex* nStateVec);
     virtual complex* AllocStateVec(bitCapInt elemCount, bool doForceAlloc = false);
-    virtual void FreeStateVec()
-    {
-        if (stateVec) {
-#if defined(_WIN32)
-            _aligned_free(stateVec);
-#else
-            free(stateVec);
-#endif
-        }
-        stateVec = NULL;
-    }
 
     virtual void DecomposeDispose(bitLenInt start, bitLenInt length, QEngineCPUPtr dest);
     virtual void Apply2x2(bitCapInt offset1, bitCapInt offset2, const complex* mtrx, const bitLenInt bitCount,

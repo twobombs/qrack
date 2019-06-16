@@ -95,7 +95,7 @@ public:
         }
     }
 
-    ~QEngineOCL()
+    virtual ~QEngineHybrid()
     {
         Unlock();
 

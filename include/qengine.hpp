@@ -63,6 +63,24 @@ public:
         // Intentionally left blank
     }
 
+    virtual ~QEngine()
+    {
+        Finish();
+        FreeStateVec();
+    }
+
+    virtual void FreeStateVec()
+    {
+        if (stateVec) {
+#if defined(_WIN32)
+            _aligned_free(stateVec);
+#else
+            free(stateVec);
+#endif
+        }
+        stateVec = NULL;
+    }
+
     virtual bool ForceM(bitLenInt qubitIndex, bool result, bool doForce = true);
     virtual bitCapInt ForceM(const bitLenInt* bits, const bitLenInt& length, const bool* values);
     virtual bitCapInt ForceMReg(bitLenInt start, bitLenInt length, bitCapInt result, bool doForce = true);
