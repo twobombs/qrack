@@ -277,7 +277,8 @@ void QEngineOCL::CopyState(QInterfacePtr orig)
 
     complex* nStateVec = AllocStateVec(maxQPower);
     BufferPtr nStateBuffer = MakeStateVecBuffer(nStateVec);
-    ResetStateVec(nStateVec, nStateBuffer);
+    ResetStateVec(nStateVec);
+    ResetStateBuffer(nStateBuffer);
 
     src->LockSync(CL_MAP_READ);
     LockSync(CL_MAP_WRITE);
@@ -406,7 +407,8 @@ void QEngineOCL::SetDevice(const int& dID, const bool& forceReInit)
             FreeAligned(nStateVec);
         } else {
             // We had host allocation; we will continue to have it.
-            ResetStateVec(nStateVec, MakeStateVecBuffer(nStateVec));
+            ResetStateVec(nStateVec);
+            ResetStateBuffer(MakeStateVecBuffer(nStateVec));
         }
     } else {
         // In this branch, the QEngineOCL is first being initialized, and no data needs to be copied between device
@@ -441,14 +443,7 @@ real1 QEngineOCL::ParSum(real1* toSum, bitCapInt maxI)
 
 void QEngineOCL::InitOCL(int devID) { SetDevice(devID, true); }
 
-void QEngineOCL::ResetStateVec(complex* nStateVec, BufferPtr nStateBuffer)
-{
-    stateBuffer = nStateBuffer;
-    if (stateVec) {
-        FreeStateVec();
-        stateVec = nStateVec;
-    }
-}
+void QEngineOCL::ResetStateBuffer(BufferPtr nStateBuffer) { stateBuffer = nStateBuffer; }
 
 void QEngineOCL::SetPermutation(bitCapInt perm, complex phaseFac)
 {
@@ -534,7 +529,8 @@ void QEngineOCL::CArithmeticCall(OCLAPI api_call, bitCapInt (&bciArgs)[BCI_ARG_L
 
     WaitCall(api_call, ngc, ngs, oclArgs);
 
-    ResetStateVec(nStateVec, nStateBuffer);
+    ResetStateVec(nStateVec);
+    ResetStateBuffer(nStateBuffer);
 }
 
 /// NOT gate, which is also Pauli x matrix
@@ -894,7 +890,8 @@ void QEngineOCL::Compose(OCLAPI apiCall, bitCapInt* bciArgs, QEngineOCLPtr toCop
         toCopy->UnlockSync();
     }
 
-    ResetStateVec(nStateVec, nStateBuffer);
+    ResetStateVec(nStateVec);
+    ResetStateBuffer(nStateBuffer);
 }
 
 bitLenInt QEngineOCL::Compose(QEngineOCLPtr toCopy)
@@ -1116,7 +1113,8 @@ void QEngineOCL::DecomposeDispose(bitLenInt start, bitLenInt length, QEngineOCLP
 
     WaitCall(OCL_API_DECOMPOSEAMP, ngc, ngs, { probBuffer1, angleBuffer1, poolItem->ulongBuffer, nStateBuffer });
 
-    ResetStateVec(nStateVec, nStateBuffer);
+    ResetStateVec(nStateVec);
+    ResetStateBuffer(nStateBuffer);
 
     delete[] remainderStateProb;
     delete[] remainderStateAngle;
@@ -1773,7 +1771,8 @@ void QEngineOCL::xMULx(OCLAPI api_call, bitCapInt* bciArgs, BufferPtr controlBuf
         WaitCall(api_call, ngc, ngs, { stateBuffer, poolItem->ulongBuffer, nStateBuffer });
     }
 
-    ResetStateVec(nStateVec, nStateBuffer);
+    ResetStateVec(nStateVec);
+    ResetStateBuffer(nStateBuffer);
 }
 
 void QEngineOCL::MULx(

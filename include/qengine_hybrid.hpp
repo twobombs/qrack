@@ -85,7 +85,8 @@ public:
     QEngineHybrid(bitLenInt qBitCount, bitCapInt initState = 0, qrack_rand_gen_ptr rgp = nullptr,
         complex phaseFac = complex(-999.0, -999.0), bool doNorm = false, bool randomGlobalPhase = true,
         bool useHostMem = false, int devID = -1, bool useHardwareRNG = true, bitLenInt minOCLBits = 3)
-        : QEngineOCL(qBitCount, initState, rgp, phaseFac, doNorm, randomGlobalPhase, useHostMem, devID, useHardwareRNG,
+        : QEngine(qBitCount, rgp, doNorm, randomGlobalPhase, useHostMem, useHardwareRNG)
+        , QEngineOCL(qBitCount, initState, rgp, phaseFac, doNorm, randomGlobalPhase, useHostMem, devID, useHardwareRNG,
               minOCLBits)
         , minimumOCLBits(minOCLBits)
         , isLocked(false)

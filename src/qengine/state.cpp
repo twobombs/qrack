@@ -100,12 +100,6 @@ void QEngineCPU::CopyState(QInterfacePtr orig)
     std::copy(src->stateVec, src->stateVec + src->maxQPower, stateVec);
 }
 
-void QEngineCPU::ResetStateVec(complex* nStateVec)
-{
-    FreeStateVec();
-    stateVec = nStateVec;
-}
-
 /// Set arbitrary pure quantum state, in unsigned int permutation basis
 void QEngineCPU::SetQuantumState(const complex* inputState)
 {

@@ -237,7 +237,7 @@ public:
 
 protected:
     virtual complex* AllocStateVec(bitCapInt elemCount, bool doForceAlloc = false);
-    virtual void ResetStateVec(complex* nStateVec, BufferPtr nStateBuffer);
+    virtual void ResetStateBuffer(BufferPtr nStateBuffer);
     virtual BufferPtr MakeStateVecBuffer(complex* nStateVec);
 
     virtual void INCDECC(
