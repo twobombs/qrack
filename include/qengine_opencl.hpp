@@ -88,7 +88,6 @@ typedef std::shared_ptr<PoolItem> PoolItemPtr;
  */
 class QEngineOCL : virtual public QEngine {
 protected:
-    using QEngine::stateVec;
     int deviceID;
     DeviceContextPtr device_context;
     std::vector<EventVecPtr> wait_refs;

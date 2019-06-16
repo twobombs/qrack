@@ -156,6 +156,36 @@ public:
         AdjustToLengthChange();
     }
 
+    virtual QInterfacePtr Clone()
+    {
+        clFinish();
+
+        QEngineHybridPtr copyPtr = std::make_shared<QEngineHybrid>(qubitCount, 0, rand_generator,
+            complex(ONE_R1, ZERO_R1), doNormalize, randGlobalPhase, useHostRam, deviceID);
+
+        copyPtr->clFinish();
+
+        copyPtr->runningNorm = runningNorm;
+
+        if (!isLocked) {
+            LockSync(CL_MAP_READ);
+        }
+        if (!copyPtr->isLocked) {
+            copyPtr->LockSync(CL_MAP_WRITE);
+        }
+
+        std::copy(stateVec, stateVec + maxQPower, copyPtr->stateVec);
+
+        if (!isLocked) {
+            UnlockSync();
+        }
+        if (!copyPtr->isLocked) {
+            copyPtr->UnlockSync();
+        }
+
+        return copyPtr;
+    }
+
     /** @} */
 
     /**
@@ -279,7 +309,7 @@ public:
     }
     virtual void DIV(bitCapInt toDiv, bitLenInt inOutStart, bitLenInt carryStart, bitLenInt length)
     {
-        QENGINGEHYBRID_CALL(MUL(toDiv, inOutStart, carryStart, length));
+        QENGINGEHYBRID_CALL(DIV(toDiv, inOutStart, carryStart, length));
     }
     virtual void MULModNOut(bitCapInt toMul, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length)
     {
@@ -339,7 +369,6 @@ public:
 
     virtual void UpdateRunningNorm() { QENGINGEHYBRID_CALL(UpdateRunningNorm()); }
     virtual void NormalizeState(real1 nrm = -999.0) { QENGINGEHYBRID_CALL(NormalizeState(nrm)); }
-    virtual QInterfacePtr Clone() { QENGINGEHYBRID_CALL(Clone()); }
 
     /** @} */
 

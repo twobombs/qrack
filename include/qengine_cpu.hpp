@@ -33,9 +33,6 @@ void rotate(BidirectionalIterator first, BidirectionalIterator middle, Bidirecti
  * General purpose QEngineCPU implementation
  */
 class QEngineCPU : virtual public QEngine, public ParallelFor {
-protected:
-    using QEngine::stateVec;
-
 public:
     QEngineCPU(bitLenInt qBitCount, bitCapInt initState, qrack_rand_gen_ptr rgp = nullptr,
         complex phaseFac = complex(-999.0, -999.0), bool doNorm = false, bool randomGlobalPhase = true,
