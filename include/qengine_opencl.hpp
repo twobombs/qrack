@@ -133,13 +133,17 @@ public:
     QEngineOCL(bitLenInt qBitCount, bitCapInt initState, qrack_rand_gen_ptr rgp = nullptr,
         complex phaseFac = complex(-999.0, -999.0), bool doNorm = false, bool randomGlobalPhase = true,
         bool useHostMem = false, int devID = -1, bool useHardwareRNG = true, bitLenInt ignored = 0);
+
     QEngineOCL()
     {
         // Intentionally left blank
     }
-    virtual ~QEngineOCL() { FreeAligned(nrmArray); }
 
-    virtual void SetQubitCount(bitLenInt qb);
+    virtual ~QEngineOCL()
+    {
+        Finish();
+        FreeAligned(nrmArray);
+    }
 
     virtual void SetPermutation(bitCapInt perm, complex phaseFac = complex(-999.0, -999.0));
     virtual void CopyState(QInterfacePtr orig);

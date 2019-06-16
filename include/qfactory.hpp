@@ -17,7 +17,7 @@
 #include "qunit.hpp"
 
 #if ENABLE_OPENCL
-#include "qengine_opencl.hpp"
+#include "qengine_hybrid.hpp"
 #endif
 
 namespace Qrack {
@@ -33,10 +33,8 @@ QInterfacePtr CreateQuantumInterface(
 #if ENABLE_OPENCL
     case QINTERFACE_OPENCL:
         return std::make_shared<QEngineOCL>(args...);
-#if 0
     case QINTERFACE_HYBRID:
         return std::make_shared<QEngineHybrid>(args...);
-#endif
 #endif
     case QINTERFACE_QFUSION:
         return std::make_shared<QFusion>(subengine1, args...);
@@ -56,10 +54,8 @@ QInterfacePtr CreateQuantumInterface(QInterfaceEngine engine, QInterfaceEngine s
 #if ENABLE_OPENCL
     case QINTERFACE_OPENCL:
         return std::make_shared<QEngineOCL>(args...);
-#if 0
     case QINTERFACE_HYBRID:
         return std::make_shared<QEngineHybrid>(args...);
-#endif
 #endif
     case QINTERFACE_QFUSION:
         return std::make_shared<QFusion>(subengine, args...);
@@ -78,10 +74,8 @@ template <typename... Ts> QInterfacePtr CreateQuantumInterface(QInterfaceEngine 
 #if ENABLE_OPENCL
     case QINTERFACE_OPENCL:
         return std::make_shared<QEngineOCL>(args...);
-#if 0
     case QINTERFACE_HYBRID:
         return std::make_shared<QEngineHybrid>(args...);
-#endif
 #endif
     default:
         return NULL;

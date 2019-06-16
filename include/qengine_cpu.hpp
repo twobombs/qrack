@@ -40,11 +40,16 @@ public:
     QEngineCPU(bitLenInt qBitCount, bitCapInt initState, qrack_rand_gen_ptr rgp = nullptr,
         complex phaseFac = complex(-999.0, -999.0), bool doNorm = false, bool randomGlobalPhase = true,
         bool ignored = false, int ignored2 = -1, bool useHardwareRNG = true, bitLenInt ignored3 = 0);
+
     QEngineCPU()
     {
         // Intentionally left blank
     }
-    virtual ~QEngineCPU() {}
+
+    virtual ~QEngineCPU()
+    {
+        // Intentionally left blank
+    }
 
     virtual void SetQuantumState(const complex* inputState);
     virtual void GetQuantumState(complex* outputState);

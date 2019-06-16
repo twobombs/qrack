@@ -73,7 +73,6 @@ QEngineOCL::QEngineOCL(bitLenInt qBitCount, bitCapInt initState, qrack_rand_gen_
     , unlockHostMem(false)
 {
     InitOCL(devID);
-
     SetPermutation(initState, phaseFac);
 }
 
@@ -427,12 +426,6 @@ void QEngineOCL::SetDevice(const int& dID, const bool& forceReInit)
         // GPUs can't always tolerate uninitialized host memory, even if they're not reading from it
         DISPATCH_FILL(waitVec, *nrmBuffer, sizeof(real1) * nrmGroupCount, ZERO_R1);
     }
-}
-
-void QEngineOCL::SetQubitCount(bitLenInt qb)
-{
-    qubitCount = qb;
-    maxQPower = 1 << qubitCount;
 }
 
 real1 QEngineOCL::ParSum(real1* toSum, bitCapInt maxI)

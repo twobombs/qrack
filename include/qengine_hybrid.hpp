@@ -26,7 +26,7 @@ namespace Qrack {
 class QEngineHybrid;
 typedef std::shared_ptr<QEngineHybrid> QEngineHybridPtr;
 
-class QEngineHybrid : public QEngineCPU, QEngineOCL, QInterface {
+class QEngineHybrid : public QEngineCPU, QEngineOCL {
 protected:
     bitLenInt minimumOCLBits;
     bool isLocked;
@@ -82,7 +82,7 @@ public:
     // interface just switch between QEngineCPU and QEngineOCL
     QEngineHybrid(bitLenInt qBitCount, bitCapInt initState = 0, qrack_rand_gen_ptr rgp = nullptr,
         complex phaseFac = complex(-999.0, -999.0), bool doNorm = false, bool randomGlobalPhase = true,
-        bool useHostMem = false, int devId = -1, bool useHardwareRNG = true, bitLenInt minOCLBits = 3)
+        bool useHostMem = false, int devID = -1, bool useHardwareRNG = true, bitLenInt minOCLBits = 3)
         : QEngineOCL(qBitCount, initState, rgp, phaseFac, doNorm, randomGlobalPhase, useHostMem, devID, useHardwareRNG,
               minOCLBits)
         , minimumOCLBits(minOCLBits)
@@ -97,13 +97,8 @@ public:
 
     virtual ~QEngineHybrid()
     {
+        Finish();
         Unlock();
-
-        clFinish();
-
-        FreeStateVec();
-
-        FreeAligned(nrmArray);
     }
 
     /**
@@ -341,6 +336,26 @@ public:
     virtual void UpdateRunningNorm() { QENGINGEHYBRID_CALL(UpdateRunningNorm()); }
     virtual void NormalizeState(real1 nrm = -999.0) { QENGINGEHYBRID_CALL(NormalizeState(nrm)); }
     virtual QInterfacePtr Clone() { QENGINGEHYBRID_CALL(Clone()); }
+
+    /** @} */
+
+    /**
+     * \defgroup QEngineOCL/QEngineCPU default QInterface implementation overrides
+     *@{
+     */
+
+    virtual void UniformlyControlledSingleBit(
+        const bitLenInt* controls, const bitLenInt& controlLen, bitLenInt qubitIndex, const complex* mtrxs)
+    {
+        QENGINGEHYBRID_CALL(UniformlyControlledSingleBit(controls, controlLen, qubitIndex, mtrxs));
+    }
+
+    virtual void X(bitLenInt start, bitLenInt length) { QENGINGEHYBRID_CALL(X(start, length)); }
+
+    virtual void ROL(bitLenInt shift, bitLenInt start, bitLenInt length)
+    {
+        QENGINGEHYBRID_CALL(ROL(shift, start, length));
+    }
 
     /** @} */
 };
