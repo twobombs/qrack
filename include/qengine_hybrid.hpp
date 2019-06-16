@@ -181,5 +181,94 @@ public:
     }
 
     /** @} */
+
+    /**
+     * \defgroup QEngineOCL overrides
+     *@{
+     */
+    virtual void Finish();
+    virtual bool isFinished();
+    virtual bool TrySeparate(bitLenInt start, bitLenInt length = 1);
+
+    /** @} */
+
+    /**
+     * \defgroup QInterface pure virtuals (not overriden by QEngine)
+     *@{
+     */
+    virtual void SetQuantumState(const complex* inputState) = 0;
+    virtual void GetQuantumState(complex* outputState) = 0;
+    virtual void GetProbs(real1* outputProbs) = 0;
+    virtual complex GetAmplitude(bitCapInt perm) = 0;
+    virtual void SetPermutation(bitCapInt perm, complex phaseFac = complex(-999.0, -999.0)) = 0;
+
+    virtual void CSwap(
+        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2) = 0;
+    virtual void AntiCSwap(
+        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2) = 0;
+    virtual void CSqrtSwap(
+        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2) = 0;
+    virtual void AntiCSqrtSwap(
+        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2) = 0;
+    virtual void CISqrtSwap(
+        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2) = 0;
+    virtual void AntiCISqrtSwap(
+        const bitLenInt* controls, const bitLenInt& controlLen, const bitLenInt& qubit1, const bitLenInt& qubit2) = 0;
+
+    virtual void INC(bitCapInt toAdd, bitLenInt start, bitLenInt length) = 0;
+    virtual void CINC(
+        bitCapInt toAdd, bitLenInt inOutStart, bitLenInt length, bitLenInt* controls, bitLenInt controlLen) = 0;
+    virtual void INCC(bitCapInt toAdd, bitLenInt start, bitLenInt length, bitLenInt carryIndex) = 0;
+    virtual void INCS(bitCapInt toAdd, bitLenInt start, bitLenInt length, bitLenInt overflowIndex) = 0;
+    virtual void INCSC(
+        bitCapInt toAdd, bitLenInt start, bitLenInt length, bitLenInt overflowIndex, bitLenInt carryIndex) = 0;
+    virtual void INCSC(bitCapInt toAdd, bitLenInt start, bitLenInt length, bitLenInt carryIndex) = 0;
+    virtual void INCBCD(bitCapInt toAdd, bitLenInt start, bitLenInt length) = 0;
+    virtual void INCBCDC(bitCapInt toAdd, bitLenInt start, bitLenInt length, bitLenInt carryIndex) = 0;
+    virtual void DECC(bitCapInt toSub, bitLenInt start, bitLenInt length, bitLenInt carryIndex) = 0;
+    virtual void DECSC(
+        bitCapInt toAdd, bitLenInt start, bitLenInt length, bitLenInt overflowIndex, bitLenInt carryIndex) = 0;
+    virtual void DECSC(bitCapInt toAdd, bitLenInt start, bitLenInt length, bitLenInt carryIndex) = 0;
+    virtual void DECBCDC(bitCapInt toSub, bitLenInt start, bitLenInt length, bitLenInt carryIndex) = 0;
+    virtual void MUL(bitCapInt toMul, bitLenInt inOutStart, bitLenInt carryStart, bitLenInt length) = 0;
+    virtual void DIV(bitCapInt toDiv, bitLenInt inOutStart, bitLenInt carryStart, bitLenInt length) = 0;
+    virtual void MULModNOut(
+        bitCapInt toMul, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length) = 0;
+    virtual void POWModNOut(
+        bitCapInt base, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length) = 0;
+    virtual void CMUL(bitCapInt toMul, bitLenInt inOutStart, bitLenInt carryStart, bitLenInt length,
+        bitLenInt* controls, bitLenInt controlLen) = 0;
+    virtual void CDIV(bitCapInt toDiv, bitLenInt inOutStart, bitLenInt carryStart, bitLenInt length,
+        bitLenInt* controls, bitLenInt controlLen) = 0;
+    virtual void CMULModNOut(bitCapInt toMul, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length,
+        bitLenInt* controls, bitLenInt controlLen) = 0;
+    virtual void CPOWModNOut(bitCapInt base, bitCapInt modN, bitLenInt inStart, bitLenInt outStart, bitLenInt length,
+        bitLenInt* controls, bitLenInt controlLen) = 0;
+
+    virtual void ZeroPhaseFlip(bitLenInt start, bitLenInt length) = 0;
+    virtual void CPhaseFlipIfLess(bitCapInt greaterPerm, bitLenInt start, bitLenInt length, bitLenInt flagIndex) = 0;
+    virtual void PhaseFlipIfLess(bitCapInt greaterPerm, bitLenInt start, bitLenInt length) = 0;
+    virtual void PhaseFlip() = 0;
+
+    virtual bitCapInt IndexedLDA(bitLenInt indexStart, bitLenInt indexLength, bitLenInt valueStart,
+        bitLenInt valueLength, unsigned char* values) = 0;
+    virtual bitCapInt IndexedADC(bitLenInt indexStart, bitLenInt indexLength, bitLenInt valueStart,
+        bitLenInt valueLength, bitLenInt carryIndex, unsigned char* values) = 0;
+    virtual bitCapInt IndexedSBC(bitLenInt indexStart, bitLenInt indexLength, bitLenInt valueStart,
+        bitLenInt valueLength, bitLenInt carryIndex, unsigned char* values) = 0;
+
+    virtual void Swap(bitLenInt qubitIndex1, bitLenInt qubitIndex2) = 0;
+    virtual void SqrtSwap(bitLenInt qubitIndex1, bitLenInt qubitIndex2) = 0;
+    virtual void ISqrtSwap(bitLenInt qubitIndex1, bitLenInt qubitIndex2) = 0;
+
+    virtual void CopyState(QInterfacePtr orig) = 0;
+    virtual real1 Prob(bitLenInt qubitIndex) = 0;
+    virtual real1 ProbAll(bitCapInt fullRegister) = 0;
+    virtual bool ApproxCompare(QInterfacePtr toCompare) = 0;
+    virtual void UpdateRunningNorm() = 0;
+    virtual void NormalizeState(real1 nrm = -999.0) = 0;
+    virtual QInterfacePtr Clone() = 0;
+
+    /** @} */
 };
 } // namespace Qrack
