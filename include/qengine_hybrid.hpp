@@ -186,6 +186,15 @@ public:
         return copyPtr;
     }
 
+    virtual void ResetStateVec(complex* nStateVec)
+    {
+        QEngine::ResetStateVec(nStateVec);
+
+        if (isLocked) {
+            ResetStateBuffer(MakeStateVecBuffer(nStateVec));
+        }
+    }
+
     /** @} */
 
     /**
