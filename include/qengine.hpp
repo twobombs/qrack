@@ -135,6 +135,9 @@ public:
     virtual void NormalizeState(real1 nrm = -999.0) = 0;
 
 protected:
+    virtual complex* AllocStateVec(bitCapInt elemCount, bool doForceAlloc = false) = 0;
+    //virtual void ResetStateVec(complex* nStateVec) = 0;
+
     virtual bool IsIdentity(const complex* mtrx);
 
     virtual void Apply2x2(bitCapInt offset1, bitCapInt offset2, const complex* mtrx, const bitLenInt bitCount,

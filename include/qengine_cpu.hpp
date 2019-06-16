@@ -167,8 +167,8 @@ public:
     /** @} */
 
 protected:
-    virtual void ResetStateVec(complex* nStateVec);
     virtual complex* AllocStateVec(bitCapInt elemCount, bool doForceAlloc = false);
+    virtual void ResetStateVec(complex* nStateVec);
 
     virtual void DecomposeDispose(bitLenInt start, bitLenInt length, QEngineCPUPtr dest);
     virtual void Apply2x2(bitCapInt offset1, bitCapInt offset2, const complex* mtrx, const bitLenInt bitCount,

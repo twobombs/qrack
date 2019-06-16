@@ -162,6 +162,11 @@ public:
      *@{
      */
 
+    virtual complex* AllocStateVec(bitCapInt elemCount, bool doForceAlloc = false)
+    {
+        return QEngineOCL::AllocStateVec(elemCount, doForceAlloc);
+    }
+
     virtual void Apply2x2(bitCapInt offset1, bitCapInt offset2, const complex* mtrx, const bitLenInt bitCount,
         const bitCapInt* qPowersSorted, bool doCalcNorm)
     {

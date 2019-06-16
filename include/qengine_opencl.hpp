@@ -217,7 +217,7 @@ public:
     virtual void SetQuantumState(const complex* inputState);
     virtual void GetQuantumState(complex* outputState);
     virtual void GetProbs(real1* outputProbs);
-    complex GetAmplitude(bitCapInt perm);
+    virtual complex GetAmplitude(bitCapInt perm);
 
     virtual bool ApproxCompare(QInterfacePtr toCompare)
     {
@@ -236,6 +236,10 @@ public:
     void DispatchQueue(cl_event event, cl_int type);
 
 protected:
+    virtual complex* AllocStateVec(bitCapInt elemCount, bool doForceAlloc = false);
+    virtual void ResetStateVec(complex* nStateVec, BufferPtr nStateBuffer);
+    virtual BufferPtr MakeStateVecBuffer(complex* nStateVec);
+
     virtual void INCDECC(
         bitCapInt toMod, const bitLenInt& inOutStart, const bitLenInt& length, const bitLenInt& carryIndex);
     virtual void INCDECSC(
@@ -247,10 +251,6 @@ protected:
 
     void InitOCL(int devID);
     PoolItemPtr GetFreePoolItem();
-    void ResetStateVec(complex* nStateVec, BufferPtr nStateBuffer);
-    virtual complex* AllocStateVec(bitCapInt elemCount, bool doForceAlloc = false);
-
-    virtual BufferPtr MakeStateVecBuffer(complex* nStateVec);
 
     real1 ParSum(real1* toSum, bitCapInt maxI);
 
