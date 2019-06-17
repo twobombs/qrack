@@ -182,7 +182,7 @@ int main(int argc, char* argv[])
         }
 
         if (num_failed == 0 && hybrid) {
-            session.config().stream() << "############ QUnit -> QEngine -> OpenCL ############" << std::endl;
+            session.config().stream() << "############ QUnit -> QEngine -> Hybrid ############" << std::endl;
             testSubEngineType = QINTERFACE_HYBRID;
             testSubSubEngineType = QINTERFACE_HYBRID;
             CreateQuantumInterface(QINTERFACE_OPENCL, 1, 0).reset(); /* Get the OpenCL banner out of the way. */
@@ -209,7 +209,7 @@ int main(int argc, char* argv[])
         }
 
         if (num_failed == 0 && hybrid) {
-            session.config().stream() << "############ QUnit -> QFusion -> OpenCL ############" << std::endl;
+            session.config().stream() << "############ QUnit -> QFusion -> Hybrid ############" << std::endl;
             testSubSubEngineType = QINTERFACE_HYBRID;
             CreateQuantumInterface(QINTERFACE_OPENCL, 1, 0).reset(); /* Get the OpenCL banner out of the way. */
             num_failed = session.run();

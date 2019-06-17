@@ -25,6 +25,20 @@ namespace Qrack {
         return QEngineOCL::method;                                                                                     \
     }
 
+#define QENGINGEHYBRID_WAIT_RETURN(method, toRet)                                                                      \
+    if (isLocked) {                                                                                                    \
+        toRet = QEngineCPU::method;                                                                                    \
+    } else {                                                                                                           \
+        toRet = QEngineOCL::method;                                                                                    \
+    }
+
+#define QENGINGEHYBRID_CALL_VOID(method)                                                                               \
+    if (isLocked) {                                                                                                    \
+        QEngineCPU::method;                                                                                            \
+    } else {                                                                                                           \
+        QEngineOCL::method;                                                                                            \
+    }
+
 class QEngineHybrid;
 typedef std::shared_ptr<QEngineHybrid> QEngineHybridPtr;
 
@@ -111,48 +125,56 @@ public:
 
     virtual bitLenInt Compose(QInterfacePtr toCopy)
     {
+        bitLenInt toRet;
         SyncToOther(toCopy);
-        QENGINGEHYBRID_CALL(Compose(toCopy));
+        QENGINGEHYBRID_WAIT_RETURN(Compose(toCopy), toRet);
         AdjustToLengthChange();
+        return toRet;
     }
     virtual bitLenInt Compose(QInterfacePtr toCopy, bitLenInt start)
     {
+        bitLenInt toRet;
         SyncToOther(toCopy);
-        QENGINGEHYBRID_CALL(Compose(toCopy, start));
+        QENGINGEHYBRID_WAIT_RETURN(Compose(toCopy, start), toRet);
         AdjustToLengthChange();
+        return toRet;
     }
 
     virtual void Decompose(bitLenInt start, bitLenInt length, QInterfacePtr dest)
     {
         SyncToOther(dest);
-        QENGINGEHYBRID_CALL(Decompose(start, length, dest));
+        QENGINGEHYBRID_CALL_VOID(Decompose(start, length, dest));
         AdjustToLengthChange();
     }
 
     virtual void Dispose(bitLenInt start, bitLenInt length)
     {
-        QENGINGEHYBRID_CALL(Dispose(start, length));
+        QENGINGEHYBRID_CALL_VOID(Dispose(start, length));
         AdjustToLengthChange();
     }
 
     virtual bool TryDecompose(bitLenInt start, bitLenInt length, QInterfacePtr dest)
     {
+        bool toRet;
         SyncToOther(dest);
-        QENGINGEHYBRID_CALL(TryDecompose(start, length, dest));
+        QENGINGEHYBRID_WAIT_RETURN(TryDecompose(start, length, dest), toRet);
         AdjustToLengthChange();
+        return toRet;
     }
 
     virtual bool ApproxCompare(QInterfacePtr toCompare)
     {
+        bool toRet;
         SyncToOther(toCompare);
-        QENGINGEHYBRID_CALL(ApproxCompare(toCompare));
+        QENGINGEHYBRID_WAIT_RETURN(ApproxCompare(toCompare), toRet);
         AdjustToLengthChange();
+        return toRet;
     }
 
     virtual void CopyState(QInterfacePtr orig)
     {
         SyncToOther(orig);
-        QENGINGEHYBRID_CALL(CopyState(orig));
+        QENGINGEHYBRID_CALL_VOID(CopyState(orig));
         AdjustToLengthChange();
     }
 
@@ -232,6 +254,11 @@ public:
         bitCapInt toMod, const bitLenInt& inOutStart, const bitLenInt& length, const bitLenInt& carryIndex)
     {
         QENGINGEHYBRID_CALL(INCDECBCDC(toMod, inOutStart, length, carryIndex));
+    }
+
+    virtual void ApplyM(bitCapInt regMask, bool result, complex nrm)
+    {
+        QENGINGEHYBRID_CALL(ApplyM(regMask, result, nrm));
     }
 
     virtual void ApplyM(bitCapInt regMask, bitCapInt result, complex nrm)

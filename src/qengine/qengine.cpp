@@ -119,7 +119,9 @@ bitCapInt QEngine::ForceM(const bitLenInt* bits, const bitLenInt& length, const 
         lcv++;
     }
     if (lcv < lengthPower) {
-        lcv--;
+        if (lcv > 0) {
+            lcv--;
+        }
         result = lcv;
         nrmlzr = probArray[lcv];
     }
