@@ -80,14 +80,6 @@ public:
         stateVec = NULL;
     }
 
-    virtual void ResetStateVec(complex* nStateVec)
-    {
-        if (stateVec) {
-            FreeStateVec();
-            stateVec = nStateVec;
-        }
-    }
-
     virtual bool ForceM(bitLenInt qubitIndex, bool result, bool doForce = true);
     virtual bitCapInt ForceM(const bitLenInt* bits, const bitLenInt& length, const bool* values);
     virtual bitCapInt ForceMReg(bitLenInt start, bitLenInt length, bitCapInt result, bool doForce = true);
@@ -144,7 +136,7 @@ public:
 
 protected:
     virtual complex* AllocStateVec(bitCapInt elemCount, bool doForceAlloc = false) = 0;
-    // virtual void ResetStateVec(complex* nStateVec) = 0;
+    virtual void ResetStateVec(complex* nStateVec);
 
     virtual bool IsIdentity(const complex* mtrx);
 

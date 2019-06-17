@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <iostream>
+
 #include <thread>
 
 #include "qengine_cpu.hpp"
@@ -82,14 +84,10 @@ protected:
 
     void AdjustToLengthChange()
     {
-        bool nowLocked = (minimumOCLBits >= qubitCount);
-
-        if (isLocked != nowLocked) {
-            if (isLocked) {
-                Unlock();
-            } else {
-                Lock();
-            }
+        if (qubitCount <= minimumOCLBits) {
+            Lock();
+        } else {
+            Unlock();
         }
     }
 
@@ -139,20 +137,21 @@ public:
         AdjustToLengthChange();
         return toRet;
     }
-
+    virtual std::map<QInterfacePtr, bitLenInt> Compose(std::vector<QInterfacePtr> toCopy)
+    {
+        return QEngine::Compose(toCopy);
+    }
     virtual void Decompose(bitLenInt start, bitLenInt length, QInterfacePtr dest)
     {
         SyncToOther(dest);
         QENGINGEHYBRID_CALL_VOID(Decompose(start, length, dest));
         AdjustToLengthChange();
     }
-
     virtual void Dispose(bitLenInt start, bitLenInt length)
     {
         QENGINGEHYBRID_CALL_VOID(Dispose(start, length));
         AdjustToLengthChange();
     }
-
     virtual bool TryDecompose(bitLenInt start, bitLenInt length, QInterfacePtr dest)
     {
         bool toRet;
@@ -161,7 +160,6 @@ public:
         AdjustToLengthChange();
         return toRet;
     }
-
     virtual bool ApproxCompare(QInterfacePtr toCompare)
     {
         bool toRet;
@@ -170,14 +168,12 @@ public:
         AdjustToLengthChange();
         return toRet;
     }
-
     virtual void CopyState(QInterfacePtr orig)
     {
         SyncToOther(orig);
         QENGINGEHYBRID_CALL_VOID(CopyState(orig));
         AdjustToLengthChange();
     }
-
     virtual QInterfacePtr Clone()
     {
         clFinish();
@@ -226,7 +222,7 @@ public:
 
     virtual complex* AllocStateVec(bitCapInt elemCount, bool doForceAlloc = false)
     {
-        return QEngineOCL::AllocStateVec(elemCount, doForceAlloc);
+        QENGINGEHYBRID_CALL(AllocStateVec(elemCount, doForceAlloc));
     }
 
     virtual void Apply2x2(bitCapInt offset1, bitCapInt offset2, const complex* mtrx, const bitLenInt bitCount,
