@@ -11,8 +11,6 @@
 
 #pragma once
 
-#include <iostream>
-
 #include <thread>
 
 #include "qengine_cpu.hpp"
@@ -96,7 +94,7 @@ public:
     // interface just switch between QEngineCPU and QEngineOCL
     QEngineHybrid(bitLenInt qBitCount, bitCapInt initState = 0, qrack_rand_gen_ptr rgp = nullptr,
         complex phaseFac = complex(-999.0, -999.0), bool doNorm = false, bool randomGlobalPhase = true,
-        bool useHostMem = false, int devID = -1, bool useHardwareRNG = true, bitLenInt minOCLBits = 3)
+        bool useHostMem = false, int devID = -1, bool useHardwareRNG = true, bitLenInt minOCLBits = 5)
         : QEngine(qBitCount, rgp, doNorm, randomGlobalPhase, useHostMem, useHardwareRNG)
         , QEngineOCL(qBitCount, initState, rgp, phaseFac, doNorm, randomGlobalPhase, useHostMem, devID, useHardwareRNG,
               minOCLBits)
@@ -139,7 +137,7 @@ public:
     }
     virtual std::map<QInterfacePtr, bitLenInt> Compose(std::vector<QInterfacePtr> toCopy)
     {
-        return QEngine::Compose(toCopy);
+        return QInterface::Compose(toCopy);
     }
     virtual void Decompose(bitLenInt start, bitLenInt length, QInterfacePtr dest)
     {
@@ -268,9 +266,8 @@ public:
      * \defgroup QEngineOCL overrides
      *@{
      */
-    virtual void Finish() { QENGINGEHYBRID_CALL(Finish()); }
-    virtual bool isFinished() { QENGINGEHYBRID_CALL(isFinished()); }
-    virtual bool TrySeparate(bitLenInt start, bitLenInt length = 1) { QENGINGEHYBRID_CALL(TrySeparate(start, length)); }
+    virtual void Finish() { QEngineOCL::Finish(); }
+    virtual bool isFinished() { return QEngineOCL::isFinished(); }
 
     /** @} */
 

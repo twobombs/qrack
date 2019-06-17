@@ -520,19 +520,28 @@ void QEngineCPU::DecomposeDispose(bitLenInt start, bitLenInt length, QEngineCPUP
     i = 0;
     j = 0;
     k = 0;
-    while (remainderStateProb[i] < min_norm) {
+    while ((i < remainderPower) && (remainderStateProb[i] < min_norm)) {
         i++;
     }
     k = i & ((1U << start) - 1);
-    k |= (i ^ k) << length;
+    k |= (i ^ k) << (start + length);
 
-    while (partStateProb[j] < min_norm) {
+    while ((j < partPower) && (partStateProb[j] < min_norm)) {
         j++;
     }
     k |= j << start;
 
-    real1 refAngle = arg(stateVec[k]);
-    real1 angleOffset = refAngle - (remainderStateAngle[i] + partStateAngle[j]);
+    real1 refAngle = ZERO_R1;
+    if (k < maxQPower) {
+        refAngle = arg(GetAmplitude(k));
+    }
+    real1 angleOffset = refAngle;
+    if (i < remainderPower) {
+        angleOffset -= remainderStateAngle[i];
+    }
+    if (j < partPower) {
+        angleOffset -= partStateAngle[j];
+    }
 
     for (bitCapInt l = 0; l < partPower; l++) {
         partStateAngle[l] += angleOffset;

@@ -1053,7 +1053,7 @@ void kernel incdecbcdc(global cmplx* stateVec, constant bitCapInt* bitCapIntPtr,
                 }
                 outInt |= ((bitCapInt)nibbles[j]) << (j * 4);
             }
-            outRes = (outInt << (inOutStart)) | otherRes | carryRes;
+            outRes = (outInt << inOutStart) | otherRes | carryRes;
             nStateVec[outRes] = amp1;
             outRes ^= carryMask;
             nStateVec[outRes] = amp2;
