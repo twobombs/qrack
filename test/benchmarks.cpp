@@ -32,7 +32,7 @@ using namespace Qrack;
         REQUIRE(__tmp_b > (__tmp_b - EPSILON));                                                                        \
     } while (0);
 
-const bitLenInt MaxQubits = 24;
+const bitLenInt MaxQubits = 28;
 
 const double clockFactor = 1000.0 / CLOCKS_PER_SEC; // Report in ms
 
@@ -165,7 +165,7 @@ TEST_CASE("test_x_single")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->X(0); });
 }
-
+#if 0
 TEST_CASE("test_y_single")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->Y(0); });
@@ -180,7 +180,7 @@ TEST_CASE("test_swap_single")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->Swap(0, 1); });
 }
-
+#endif
 TEST_CASE("test_cnot_all")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->CNOT(0, n / 2, n / 2); });
@@ -190,7 +190,7 @@ TEST_CASE("test_x_all")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->X(0, n); });
 }
-
+#if 0
 TEST_CASE("test_y_all")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->Y(0, n); });
@@ -352,7 +352,7 @@ TEST_CASE("test_set_reg")
 {
     benchmarkLoop([](QInterfacePtr qftReg, int n) { qftReg->SetReg(0, n, 1); });
 }
-
+#endif
 TEST_CASE("test_grover")
 {
 
@@ -386,7 +386,7 @@ TEST_CASE("test_grover")
 
             qftReg->MReg(0, n);
         },
-        16);
+        20);
 }
 
 TEST_CASE("test_qft_ideal_init")
