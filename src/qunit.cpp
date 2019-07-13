@@ -19,9 +19,9 @@
 
 #define SHARD_STATE(shard) (norm(shard.amp0) < (ONE_R1 / 2))
 #define CACHED_CLASSICAL(shard)                                                                                        \
-    ((!shard.isPlusMinus) && !shard.isProbDirty && ((norm(shard.amp0) < min_norm) || (norm(shard.amp1) < min_norm)))
+    ((!shard.fourierUnit) && !shard.isProbDirty && ((norm(shard.amp0) < min_norm) || (norm(shard.amp1) < min_norm)))
 #define PHASE_MATTERS(shard)                                                                                           \
-    (!randGlobalPhase || shard.isPlusMinus || shard.isProbDirty || shard.isPhaseDirty ||                               \
+    (!randGlobalPhase || shard.fourierUnit || shard.isProbDirty || shard.isPhaseDirty ||                               \
         !((norm(shard.amp0) < min_norm) || (norm(shard.amp1) < min_norm)))
 
 namespace Qrack {
@@ -714,7 +714,8 @@ void QUnit::Swap(bitLenInt qubit1, bitLenInt qubit2)
     std::swap(shards[qubit1], shards[qubit2]);
     // Swap commutes with Hadamards on both bits, (and the identity,) but the commutator for a single H-ed bit is an H
     // on the other bit.
-    std::swap(shards[qubit1].isPlusMinus, shards[qubit2].isPlusMinus);
+    std::swap(shards[qubit1].fourierUnit, shards[qubit2].fourierUnit);
+    std::swap(shards[qubit1].fourierMapped, shards[qubit2].fourierMapped);
 
     QInterfacePtr unit = shards[qubit1].unit;
     if (unit == shards[qubit2].unit) {
@@ -833,10 +834,10 @@ void QUnit::H(bitLenInt target)
 {
     QEngineShard& shard = shards[target];
 
-    if (!freezeBasis) {
-        shard.isPlusMinus = !shard.isPlusMinus;
-        return;
-    }
+    // if (!freezeBasis) {
+    //    shard.isPlusMinus = !shard.isPlusMinus;
+    //    return;
+    //}
 
     EndEmulation(shard);
 
@@ -875,7 +876,7 @@ void QUnit::ZBase(const bitLenInt& target)
 void QUnit::X(bitLenInt target)
 {
     QEngineShard& shard = shards[target];
-    if (!shard.isPlusMinus) {
+    if (!shard.fourierUnit) {
         if (CACHED_CLASSICAL(shard)) {
             shard.isEmulated = true;
         } else {
@@ -891,7 +892,7 @@ void QUnit::Z(bitLenInt target)
 {
     TransformBasis(false, target);
     QEngineShard& shard = shards[target];
-    if (!shard.isPlusMinus) {
+    if (!shard.fourierUnit) {
         if (PHASE_MATTERS(shard)) {
             EndEmulation(shard);
             shard.unit->Z(shard.mapped);
@@ -930,7 +931,7 @@ void QUnit::TransformInvert(const complex& topRight, const complex& bottomLeft, 
     ApplyEitherControlled(controls, controlLen, { target }, anti,                                                      \
         [&](QInterfacePtr unit, std::vector<bitLenInt> mappedControls) {                                               \
             complex trnsMtrx[4];                                                                                       \
-            if (!shards[target].isPlusMinus) {                                                                         \
+            if (!shards[target].fourierUnit) {                                                                         \
                 std::copy(mtrx, mtrx + 4, trnsMtrx);                                                                   \
             } else {                                                                                                   \
                 Transform2x2(mtrx, trnsMtrx);                                                                          \
@@ -942,7 +943,7 @@ void QUnit::TransformInvert(const complex& topRight, const complex& bottomLeft, 
 #define CTRLED_PHASE_WRAP(ctrld, ctrldgen, bare, anti)                                                                 \
     ApplyEitherControlled(controls, controlLen, { target }, anti,                                                      \
         [&](QInterfacePtr unit, std::vector<bitLenInt> mappedControls) {                                               \
-            if (!shards[target].isPlusMinus) {                                                                         \
+            if (!shards[target].fourierUnit) {                                                                         \
                 unit->ctrld;                                                                                           \
             } else {                                                                                                   \
                 complex trnsMtrx[4];                                                                                   \
@@ -955,7 +956,7 @@ void QUnit::TransformInvert(const complex& topRight, const complex& bottomLeft, 
 #define CTRLED_INVERT_WRAP(ctrld, ctrldgen, bare, anti)                                                                \
     ApplyEitherControlled(controls, controlLen, { target }, anti,                                                      \
         [&](QInterfacePtr unit, std::vector<bitLenInt> mappedControls) {                                               \
-            if (!shards[target].isPlusMinus) {                                                                         \
+            if (!shards[target].fourierUnit) {                                                                         \
                 unit->ctrld;                                                                                           \
             } else {                                                                                                   \
                 complex trnsMtrx[4];                                                                                   \
@@ -1030,7 +1031,7 @@ void QUnit::CZ(bitLenInt control, bitLenInt target)
 void QUnit::ApplySinglePhase(const complex topLeft, const complex bottomRight, bool doCalcNorm, bitLenInt target)
 {
     QEngineShard& shard = shards[target];
-    if (!shard.isPlusMinus) {
+    if (!shard.fourierUnit) {
         // If the target bit is in a |0>/|1> eigenstate, this gate has no effect.
         if (PHASE_MATTERS(shard)) {
             EndEmulation(shard);
@@ -1054,7 +1055,7 @@ void QUnit::ApplySinglePhase(const complex topLeft, const complex bottomRight, b
 void QUnit::ApplySingleInvert(const complex topRight, const complex bottomLeft, bool doCalcNorm, bitLenInt target)
 {
     QEngineShard& shard = shards[target];
-    if (!shard.isPlusMinus) {
+    if (!shard.fourierUnit) {
         if (CACHED_CLASSICAL(shard)) {
             shard.isEmulated = true;
         } else {
@@ -1121,7 +1122,7 @@ void QUnit::ApplySingleBit(const complex* mtrx, bool doCalcNorm, bitLenInt targe
 
     complex trnsMtrx[4];
 
-    if (!shard.isPlusMinus) {
+    if (!shard.fourierUnit) {
         std::copy(mtrx, mtrx + 4, trnsMtrx);
     } else {
         Transform2x2(mtrx, trnsMtrx);
@@ -2327,35 +2328,6 @@ QInterfacePtr QUnit::Clone()
     return copyPtr;
 }
 
-void QUnit::TransformBasis(const bool& toPlusMinus, const bitLenInt& i)
-{
-    if (freezeBasis || (toPlusMinus == shards[i].isPlusMinus)) {
-        // Recursive call that should be blocked,
-        // or already in target basis.
-        return;
-    }
-
-    freezeBasis = true;
-
-    H(i);
-    shards[i].isPlusMinus = toPlusMinus;
-    TrySeparate(i);
-
-    freezeBasis = false;
-}
-
-bool QUnit::CheckRangeInBasis(const bitLenInt& start, const bitLenInt& length, const bitLenInt& plusMinus)
-{
-    bool root = shards[start].isPlusMinus;
-    for (bitLenInt i = 0; i < length; i++) {
-        if (root != shards[start + i].isPlusMinus) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 void QUnit::CheckShardSeparable(const bitLenInt& target)
 {
     QEngineShard& shard = shards[target];
@@ -2369,8 +2341,125 @@ void QUnit::CheckShardSeparable(const bitLenInt& target)
     } else if (norm(shard.amp1) < min_norm) {
         SeparateBit(false, target);
     } else if (abs(norm(shard.amp1) - (ONE_R1 / 2)) < min_norm) {
-        TransformBasis(!shard.isPlusMinus, target);
+        TransformBasis(!shard.fourierUnit, target);
     }
+}
+
+void QUnit::TransformToFourier(const bitLenInt& i)
+{
+    if (freezeBasis || isSparse || (shards[i].fourierUnit != NULL)) {
+        // A sparse state vector already fulfills the point of this optimization,
+        // or already in target basis.
+        return;
+    }
+
+    freezeBasis = true;
+
+    QInterfacePtr unit = shards[i].unit;
+
+    QUnit subUnit = QUnit(engine, subengine, unit->GetQubitCount(), 0, rand_generator, phaseFactor, doNormalize,
+        randGlobalPhase, useHostRam, devID, useRDRAND, isSparse);
+
+    for (bitLenInt i = 0; i < qubitCount; i++) {
+        if (unit == shards[i].unit) {
+            subUnit.shards[shards[i].mapped] = shards[i];
+        }
+    }
+
+    subUnit.freezeBasis = true;
+    subUnit.QFT(0, unit->GetQubitCount(), true);
+
+    QInterfacePtr tUnit = subUnit.shards[0].unit;
+
+    for (bitLenInt i = 0; i < qubitCount; i++) {
+        if (unit == shards[i].unit) {
+            bitLenInt tempMapped = shards[i].mapped;
+            shards[i] = subUnit.shards[shards[i].mapped];
+            shards[i].fourierUnit = tUnit;
+            shards[i].fourierMapped = tempMapped;
+        }
+    }
+
+    freezeBasis = false;
+}
+
+void QUnit::TransformBasis(const bool& toFourier, const bitLenInt& i)
+{
+    if (toFourier) {
+        TransformToFourier(i);
+    } else {
+        TransformToPerm(i);
+    }
+}
+
+void QUnit::TransformToPerm(const bitLenInt& i)
+{
+    if (freezeBasis || isSparse || (shards[i].fourierUnit == NULL)) {
+        // A sparse state vector already fulfills the point of this optimization,
+        // or already in target basis.
+        return;
+    }
+
+    freezeBasis = true;
+
+    QInterfacePtr unit = shards[i].fourierUnit;
+
+    bitLenInt shardCount = 0;
+    for (bitLenInt i = 0; i < qubitCount; i++) {
+        if (unit == shards[i].fourierUnit) {
+            shardCount++;
+        }
+    }
+
+    QUnit subUnit = QUnit(engine, subengine, shardCount, 0, rand_generator, phaseFactor, doNormalize, randGlobalPhase,
+        useHostRam, devID, useRDRAND, isSparse);
+
+    for (bitLenInt i = 0; i < qubitCount; i++) {
+        if (unit == shards[i].fourierUnit) {
+            subUnit.shards[shards[i].fourierMapped] = shards[i];
+        }
+    }
+
+    subUnit.freezeBasis = true;
+    subUnit.IQFT(0, shardCount, true);
+
+    for (bitLenInt i = 0; i < qubitCount; i++) {
+        if (unit == shards[i].fourierUnit) {
+            shards[i] = subUnit.shards[shards[i].fourierMapped];
+            shards[i].fourierUnit = NULL;
+            shards[i].fourierMapped = 0;
+        }
+    }
+
+    freezeBasis = false;
+}
+
+bool QUnit::CheckRangeInBasis(const bitLenInt& start, const bitLenInt& length, const bitLenInt& fourier)
+{
+    QInterfacePtr fourierRoot = shards[start].fourierUnit;
+    for (bitLenInt i = 0; i < length; i++) {
+        if (fourierRoot != shards[start + i].fourierUnit) {
+            return false;
+        }
+    }
+
+    if (!fourier) {
+        return true;
+    }
+
+    for (bitLenInt i = 0; i < start; i++) {
+        if (shards[i].fourierUnit == fourierRoot) {
+            return false;
+        }
+    }
+
+    for (bitLenInt i = (start + length); i < qubitCount; i++) {
+        if (shards[i].fourierUnit == fourierRoot) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 } // namespace Qrack

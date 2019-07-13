@@ -28,7 +28,8 @@ struct QEngineShard {
     bool isPhaseDirty;
     complex amp0;
     complex amp1;
-    bool isPlusMinus;
+    QInterfacePtr fourierUnit;
+    bitLenInt fourierMapped;
 
     QEngineShard()
         : unit(NULL)
@@ -38,7 +39,8 @@ struct QEngineShard {
         , isPhaseDirty(false)
         , amp0(complex(ONE_R1, ZERO_R1))
         , amp1(complex(ZERO_R1, ZERO_R1))
-        , isPlusMinus(false)
+        , fourierUnit(NULL)
+        , fourierMapped(0)
     {
     }
 
@@ -48,7 +50,8 @@ struct QEngineShard {
         , isEmulated(false)
         , isProbDirty(false)
         , isPhaseDirty(false)
-        , isPlusMinus(false)
+        , fourierUnit(NULL)
+        , fourierMapped(0)
     {
         amp0 = set ? complex(ZERO_R1, ZERO_R1) : complex(ONE_R1, ZERO_R1);
         amp1 = set ? complex(ONE_R1, ZERO_R1) : complex(ZERO_R1, ZERO_R1);
@@ -63,14 +66,19 @@ struct QEngineShard {
         , isPhaseDirty(true)
         , amp0(complex(ONE_R1, ZERO_R1))
         , amp1(complex(ZERO_R1, ZERO_R1))
-        , isPlusMinus(false)
+        , fourierUnit(NULL)
+        , fourierMapped(0)
     {
     }
 
     ~QEngineShard()
     {
-        if (unit)
+        if (unit) {
             unit->Finish();
+        }
+        if (fourierUnit) {
+            fourierUnit->Finish();
+        }
     }
 };
 
@@ -374,18 +382,21 @@ protected:
     void TransformPhase(const complex& topLeft, const complex& bottomRight, complex* mtrxOut);
     void TransformInvert(const complex& topRight, const complex& bottomLeft, complex* mtrxOut);
 
-    void TransformBasis(const bool& toPlusMinus, const bitLenInt& i);
-    void TransformBasis(const bool& toPlusMinus, const bitLenInt& start, const bitLenInt& length)
+    void TransformBasis(const bool& toFourier, const bitLenInt& i);
+    void TransformBasis(const bool& toFourier, const bitLenInt& start, const bitLenInt& length)
     {
         for (bitLenInt i = 0; i < length; i++) {
-            TransformBasis(toPlusMinus, start + i);
+            TransformBasis(toFourier, start + i);
         }
     }
-    void TransformBasisAll(const bool& toPlusMinus) { TransformBasis(toPlusMinus, 0, qubitCount); }
+    void TransformBasisAll(const bool& toFourier) { TransformBasis(toFourier, 0, qubitCount); }
 
     bool CheckRangeInBasis(const bitLenInt& start, const bitLenInt& length, const bitLenInt& plusMinus);
 
     void CheckShardSeparable(const bitLenInt& target);
+
+    void TransformToFourier(const bitLenInt& i);
+    void TransformToPerm(const bitLenInt& i);
 
     void DirtyShardRange(bitLenInt start, bitLenInt length)
     {
