@@ -1118,7 +1118,7 @@ void QUnit::AntiCCNOT(bitLenInt control1, bitLenInt control2, bitLenInt target)
 
 void QUnit::CZ(bitLenInt control, bitLenInt target)
 {
-    if (!PHASE_MATTERS(shards[target]) || !PHASE_MATTERS(shards[control])) {
+    if (!PHASE_MATTERS(shards[target])) {
         return;
     }
 
