@@ -47,7 +47,7 @@ void benchmarkLoopVariable(std::function<void(QInterfacePtr, int)> fn, bitLenInt
     bool hadamardRandomBits = false, bool logNormal = false)
 {
 
-    const int ITERATIONS = 100;
+    const int ITERATIONS = 10;
 
     std::cout << std::endl;
     std::cout << ITERATIONS << " iterations";
