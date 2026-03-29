@@ -923,12 +923,18 @@ void QEngineCPU::INCDECBCDC(const bitCapInt& toMod_, bitLenInt inOutStart, bitLe
     StateVectorPtr nStateVec = AllocStateVec(maxQPowerOcl);
     nStateVec->clear();
 
+    const unsigned numThreads = GetConcurrencyLevel();
+    std::vector<std::unique_ptr<int[]>> nibblesVec(numThreads);
+    for (size_t i = 0; i < numThreads; ++i) {
+        nibblesVec[i] = std::unique_ptr<int[]>(new int[nibbleCount]);
+    }
+
     par_for_skip(0, maxQPowerOcl, pow2Ocl(carryIndex), 1U, [&](const bitCapIntOcl& lcv, const unsigned& cpu) {
         const bitCapIntOcl otherRes = lcv & otherMask;
         bitCapIntOcl partToAdd = toModOcl;
         bitCapIntOcl inOutInt = (lcv & inOutMask) >> inOutStart;
         int test1, test2;
-        int* nibbles = new int[nibbleCount];
+        int* nibbles = nibblesVec[cpu].get();
         bool isValid = true;
 
         test1 = (int)(inOutInt & 15UL);
@@ -973,7 +979,6 @@ void QEngineCPU::INCDECBCDC(const bitCapInt& toMod_, bitLenInt inOutStart, bitLe
             nStateVec->write(lcv, stateVec->read(lcv));
             nStateVec->write(lcv | carryMask, stateVec->read(lcv | carryMask));
         }
-        delete[] nibbles;
     });
     ResetStateVec(nStateVec);
 }
